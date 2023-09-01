@@ -1,3 +1,4 @@
+import mysql
 import psycopg2.errors
 from phpserialize import unserialize
 from connection import cnx, conn, MD5
@@ -20,53 +21,698 @@ def get_value_asksend(t):
         return "NONE"
 
 
+class Fr4Dimension:
+    def __init__(self, id, numcommande, panel, unit, unit_length, unit_width, paneltype, typeallpcb, varioostype,
+                 panel_lenght_allpcb, panel_width_allpcb, allpcbxout_allpcb, panel_allpcb,
+                 panel_varioos_lenght, panel_varioos_width, differentpcb_type, allpcbxout_varioos,
+                 panelpopup_unit_X, panelpopup_unit_Y, panelpopup_nbpcb_X, panelpopup_nbpcb_Y,
+                 panelpopup_border_top, panelpopup_border_bottom, panelpopup_border_right,
+                 panelpopup_border_left, popup_panel_separationX, popup_panel_separationY,
+                 panelpopup_spacing_X, panelpopup_spacing_Y, allpcbxout_popup, panel_popup_X, panel_popup_Y,
+                 panel_popup_nbPCB):
+        self.id = id
+        self.numcommande = numcommande
+        self.panel = self.treatmentPanel(numcommande, panel)
+        self.unit = self.treatmentUnit(numcommande, unit)
+        self.unit_length = self.treatmentUnitLength(numcommande, unit_length)
+        self.unit_width = self.treatmentUnitWidth(numcommande, unit_width)
+        self.paneltype = self.treatmentPaneltype(numcommande, paneltype)
+        self.typeallpcb = self.treatmentTypeallpcb(numcommande, typeallpcb)
+        self.varioostype = self.treatmentVarioostype(numcommande, varioostype)
+        self.panel_lenght_allpcb = self.treatmentPanelLenghtAllpcb(numcommande, panel_lenght_allpcb)
+        self.panel_width_allpcb = self.treatmentPanelWidthAllpcb(numcommande, panel_width_allpcb)
+        self.allpcbxout_allpcb = self.treatmentAllpcbxoutAllpcb(numcommande, allpcbxout_allpcb)
+        self.panel_allpcb = self.treatmentPanelAllpcb(numcommande, panel_allpcb)
+        self.panel_varioos_lenght = self.treatmentPanelVarioosLenght(numcommande, panel_varioos_lenght)
+        self.panel_varioos_width = self.treatmentPanelVarioosWidth(numcommande, panel_varioos_width)
+        self.differentpcb_type = self.treatmentDifferentpcbType(numcommande, differentpcb_type)
+        self.allpcbxout_varioos = self.treatmentAllpcbxoutVarioos(numcommande, allpcbxout_varioos)
+        self.panelpopup_unit_X = self.treatmentPanelpopupUnitX(numcommande, panelpopup_unit_X)
+        self.panelpopup_unit_Y = self.treatmentPanelpopupUnitY(numcommande, panelpopup_unit_Y)
+        self.panelpopup_nbpcb_X = self.treatmentPanelpopupNbpcbX(numcommande, panelpopup_nbpcb_X)
+        self.panelpopup_nbpcb_Y = self.treatmentPanelpopupNbpcbY(numcommande, panelpopup_nbpcb_Y)
+        self.panelpopup_border_top = self.treatmentPanelpopupBorderTop(numcommande, panelpopup_border_top)
+        self.panelpopup_border_bottom = self.treatmentPanelpopupBorderBottom(numcommande, panelpopup_border_bottom)
+        self.panelpopup_border_right = self.treatmentPanelpopupBorderRight(numcommande, panelpopup_border_right)
+        self.panelpopup_border_left = self.treatmentPanelpopupBorderLeft(numcommande, panelpopup_border_left)
+        self.popup_panel_separationX = self.treatmentPopupPanelSeparationX(numcommande, popup_panel_separationX)
+        self.popup_panel_separationY = self.treatmentPopupPanelSeparationY(numcommande, popup_panel_separationY)
+        self.panelpopup_spacing_X = self.treatmentPanelpopupSpacingX(numcommande, panelpopup_spacing_X)
+        self.panelpopup_spacing_Y = self.treatmentPanelpopupSpacingY(numcommande, panelpopup_spacing_Y)
+        self.allpcbxout_popup = self.treatmentAllpcbxoutPopup(numcommande, allpcbxout_popup)
+        self.panel_popup_X = self.treatmentPanelPopupX(numcommande, panel_popup_X)
+        self.panel_popup_Y = self.treatmentPanelPopupY(numcommande, panel_popup_Y)
+        self.panel_popup_nbPCB = self.treatmentPanelPopupNbPcb(numcommande, panel_popup_nbPCB)
+
+    def treatmentPanel(self, numcommande, panel):
+        return None
+
+    def treatmentUnit(self, numcommande, unit):
+        return None
+
+    def treatmentUnitLength(self, numcommande, unit_length):
+        return None
+
+    def treatmentUnitWidth(self, numcommande, unit_width):
+        return None
+
+    def treatmentPaneltype(self, numcommande, paneltype):
+        match paneltype:
+            case "unit":
+                return "UNIT"
+            case "panel":
+                return "MULTI"
+            case "varioos":
+                return "VARIOUS"
+            case "VariousPCB":
+                return "VARIOUS"
+            case "AllPCBsidentical":
+                return "AllPCBsidentical"
+            case _:
+                raise ValueError("[treatmentPaneltype] - " + str(numcommande) + " value : " + str(paneltype))
+
+    def treatmentTypeallpcb(self, numcommande, typeallpcb):
+        return None
+
+    def treatmentVarioostype(self, numcommande, varioostype):
+        return None
+
+    def treatmentPanelLenghtAllpcb(self, numcommande, panel_lenght_allpcb):
+        return panel_lenght_allpcb
+
+    def treatmentPanelWidthAllpcb(self, numcommande, panel_width_allpcb):
+        return panel_width_allpcb
+
+    def treatmentAllpcbxoutAllpcb(self, numcommande, allpcbxout_allpcb):
+        return None
+
+    def treatmentPanelAllpcb(self, numcommande, panel_allpcb):
+        return None
+
+    def treatmentPanelVarioosLenght(self, numcommande, panel_varioos_lenght):
+        return None
+
+    def treatmentPanelVarioosWidth(self, numcommande, panel_varioos_width):
+        return None
+
+    def treatmentDifferentpcbType(self, numcommande, differentpcb_type):
+        return None
+
+    def treatmentAllpcbxoutVarioos(self, numcommande, allpcbxout_varioos):
+        return None
+
+    def treatmentPanelpopupUnitX(self, numcommande, panelpopup_unit_X):
+        return None
+
+    def treatmentPanelpopupUnitY(self, numcommande, panelpopup_unit_Y):
+        return None
+
+    def treatmentPanelpopupNbpcbX(self, numcommande, panelpopup_nbpcb_X):
+        return panelpopup_nbpcb_X
+
+    def treatmentPanelpopupNbpcbY(self, numcommande, panelpopup_nbpcb_Y):
+        return panelpopup_nbpcb_Y
+
+    def treatmentPanelpopupBorderTop(self, numcommande, panelpopup_border_top):
+        if panelpopup_border_top == '':
+            return '0'
+        else:
+            return panelpopup_border_top
+
+    def treatmentPanelpopupBorderBottom(self, numcommande, panelpopup_border_bottom):
+        if panelpopup_border_bottom == '':
+            return '0'
+        else:
+            return panelpopup_border_bottom
+
+    def treatmentPanelpopupBorderRight(self, numcommande, panelpopup_border_right):
+        if panelpopup_border_right == '':
+            return '0'
+        else:
+            return panelpopup_border_right
+
+    def treatmentPanelpopupBorderLeft(self, numcommande, panelpopup_border_left):
+        if panelpopup_border_left == '':
+            return '0'
+        else:
+            return panelpopup_border_left
+
+    def treatmentPopupPanelSeparationX(self, numcommande, popup_panel_separationX):
+        match popup_panel_separationX:
+            case "V-cut":
+                return "V_CUT"
+            case "Routing":
+                return "ROUTING"
+            case "Route + stamp holes":
+                return "ROUTING_STAMP_HOLE"
+            case "Routing_stamp_hole":
+                return "ROUTING_STAMP_HOLE"
+            case _:
+                return "NO_SEPERATION"
+
+    def treatmentPopupPanelSeparationY(self, numcommande, popup_panel_separationY):
+        match popup_panel_separationY:
+            case "V-cut":
+                return "V_CUT"
+            case "Routing":
+                return "ROUTING"
+            case "Route + stamp holes":
+                return "ROUTING_STAMP_HOLE"
+            case "Routing_stamp_hole":
+                return "ROUTING_STAMP_HOLE"
+            case _:
+                return "NO_SEPERATION"
+
+    def treatmentPanelpopupSpacingX(self, numcommande, panelpopup_spacing_X):
+        return panelpopup_spacing_X
+
+    def treatmentPanelpopupSpacingY(self, numcommande, panelpopup_spacing_Y):
+        return panelpopup_spacing_Y
+
+    def treatmentAllpcbxoutPopup(self, numcommande, allpcbxout_popup):
+        return None
+
+    def treatmentPanelPopupX(self, numcommande, panel_popup_X):
+        return None
+
+    def treatmentPanelPopupY(self, numcommande, panel_popup_Y):
+        return None
+
+    def treatmentPanelPopupNbPcb(self, numcommande, panel_popup_nbPCB):
+        return None
+
+
 class Fr4Other:
     def __init__(self, id, numcommande, doyouneed, doyougerb, datecode, datecodewhere, rohslogo, whererohlogo, ullogo,
                  whereullogo, smallesttracewidth, FinishedHoleDiameter, controlledimpedance, viainpad, platedholes,
                  sideplating, vcut, Countersunkholes, Edgebeveling, carbonprinting, peelablemask, viaplug, ipc, stencil,
                  thickness, padreduction):
+        self.id = id
+        self.numcommande = self.treatmentNumcommande(numcommande, numcommande)
+        self.doyouneed = self.treatmentDoyouneed(doyouneed, numcommande)
+        self.doyougerb = self.treatmentDoyougerb(doyougerb, numcommande)
+        self.datecode = self.treatmentDatecode(datecode, numcommande)
+        self.datecodewhere = self.treatmentDatecodewhere(datecodewhere, datecode, numcommande)
+        self.rohslogo = self.treatmentRohslogo(rohslogo, numcommande)
+        self.whererohlogo = self.treatmentWhererohlogo(whererohlogo, rohslogo, numcommande)
+        self.ullogo = self.treatmentUllogo(ullogo, numcommande)
+        self.whereullogo = self.treatmentWhereullogo(whereullogo, ullogo, numcommande)
+        self.smallesttracewidth = self.treatmentSmallesttracewidth(smallesttracewidth, numcommande)
+        self.FinishedHoleDiameter = self.treatmentFinishedHoleDiameter(FinishedHoleDiameter, numcommande)
+        self.controlledimpedance = self.treatmentControlledimpedance(controlledimpedance, numcommande)
+        self.viainpad = self.treatmentViainpad(viainpad, numcommande)
+        self.platedholes = self.treatmentPlatedholes(platedholes, numcommande)
+        self.sideplating = self.treatmentSideplating(sideplating, numcommande)
+        self.vcut = self.treatmentVcut(vcut, numcommande)
+        self.countersunkholes = self.treatmentCountersunkholes(Countersunkholes, numcommande)
+        self.edgebeveling = self.treatmentEdgebeveling(Edgebeveling, numcommande)
+        self.carbonprinting = self.treatmentCarbonprinting(carbonprinting, numcommande)
+        self.peelablemask = self.treatmentPeelablemask(peelablemask, numcommande)
+        self.viaplug = self.treatmentViaplug(viaplug, numcommande)
+        self.ipc = self.treatmentIpc(ipc, numcommande)
+        self.stencil = self.treatmentStencil(stencil, numcommande)
+        self.thickness = self.treatmentThickneess(thickness, numcommande)
+        self.padreduction = self.treatmentPadreduction(padreduction, numcommande)
+
+    def treatmentThickneess(self, thickness, numcommande):
+        return thickness.replace("µm", "")
+
+    def treatmentNumcommande(self, numcommande, tes):
+        return numcommande
+
+    def treatmentDoyouneed(self, doyouneed, numcommande):
+        match doyouneed:
+            case "yes":
+                return "YES"
+            case "Yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentDoyouneed] - " + str(numcommande) + " value : " + str(doyouneed))
+
+    def treatmentDoyougerb(self, doyougerb, numcommande):
+        match doyougerb:
+            case "yes":
+                return "YES"
+            case "Yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentDoyougerb] - " + str(numcommande) + " value : " + str(doyougerb))
+
+    def treatmentDatecode(self, datecode, numcommande):
+        match datecode:
+            case "Solder mask":
+                return "SOLDER_MASK"
+            case "Solder mark":
+                return "SOLDER_MASK"
+            case "Screen Printing":
+                return "SCREEN_PRINTING"
+            case "Copper":
+                return "COPPER"
+            case "No":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(datecode))
+
+    def treatmentDatecodewhere(self, datecodewhere, datecode, numcommande):
+        if datecode == "No":
+            return "NO"
+
+        match datecodewhere:
+            case "Top":
+                return "TOP"
+            case "Bottom":
+                return "BOTTOM"
+            case _:
+                raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(datecodewhere))
+
+    def treatmentRohslogo(self, rohslogo, numcommande):
+        match rohslogo:
+            case "Solder mask":
+                return "SOLDER_MASK"
+            case "Screen Printing":
+                return "SCREEN_PRINTING"
+            case "Copper":
+                return "COPPER"
+            case "No":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(rohslogo))
+
+    def treatmentWhererohlogo(self, whererohlogo, rohslogo, numcommande):
+        if rohslogo == "No":
+            return "NO"
+
+        match whererohlogo:
+            case "Top":
+                return "TOP"
+            case "Bottom":
+                return "BOTTOM"
+            case _:
+                raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(whererohlogo))
+
+    def treatmentUllogo(self, ullogo, numcommande):
+        match ullogo:
+            case "Solder mask":
+                return "SOLDER_MASK"
+            case "Screen Printing":
+                return "SCREEN_PRINTING"
+            case "Copper":
+                return "COPPER"
+            case "No":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(ullogo))
+
+    def treatmentWhereullogo(self, whereullogo, ullogo, numcommande):
+        if ullogo == "No":
+            return "NO"
+
+        match whereullogo:
+            case "Top":
+                return "TOP"
+            case "Bottom":
+                return "BOTTOM"
+            case _:
+                raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(whereullogo))
+
+    def treatmentSmallesttracewidth(self, smallesttracewidth, numcommande):
+        match smallesttracewidth:
+            case "0.100":
+                return "TRACE_0_100"
+            case "0.075":
+                return "TRACE_0_075"
+            case "0.0875":
+                return "TRACE_0_0875"
+            case "0.125":
+                return "TRACE_0_125"
+            case _:
+                raise ValueError(
+                    "[treatmentSmallesttracewidth] - " + str(numcommande) + " value : " + str(smallesttracewidth))
+
+    def treatmentFinishedHoleDiameter(self, finishedHoleDiameter, numcommande):
+        match finishedHoleDiameter:
+            case "0.25":
+                return "FINISHED_HOLE_SIZE_0_25"
+            case "0.20":
+                return "FINISHED_HOLE_SIZE_0_20"
+            case "0.15":
+                return "FINISHED_HOLE_SIZE_0_15"
+            case _:
+                raise ValueError(
+                    "[treatmentFinishedHoleDiameter] - " + str(numcommande) + " value : " + str(finishedHoleDiameter))
+
+    def treatmentControlledimpedance(self, controlledimpedance, numcommande):
+        match controlledimpedance:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError(
+                    "[treatmentControlledimpedance] - " + str(numcommande) + " value : " + str(controlledimpedance))
+
+    def treatmentViainpad(self, viainpad, numcommande):
+        match viainpad:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentViainpad] - " + str(numcommande) + " value : " + str(viainpad))
+
+    def treatmentPlatedholes(self, platedholes, numcommande):
+        match platedholes:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentViainpad] - " + str(numcommande) + " value : " + str(platedholes))
+
+    def treatmentSideplating(self, sideplating, numcommande):
+        match sideplating:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentSideplating] - " + str(numcommande) + " value : " + str(sideplating))
+
+    def treatmentVcut(self, vcut, numcommande):
+        match vcut:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentVcut] - " + str(numcommande) + " value : " + str(vcut))
+
+    def treatmentCountersunkholes(self, countersunkholes, numcommande):
+        if countersunkholes == '':
+            return 0
+        else:
+            return countersunkholes
+
+    def treatmentEdgebeveling(self, edgebeveling, numcommande):
+        match edgebeveling:
+            case "yes":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentEdgebeveling] - " + str(numcommande) + " value : " + str(edgebeveling))
+
+    def treatmentCarbonprinting(self, carbonprinting, numcommande):
+        if carbonprinting == '':
+            return 'NO'
+        else:
+            return 'YES'
+
+    def treatmentPeelablemask(self, peelablemask, numcommande):
+        if peelablemask == '':
+            return 'NO'
+        else:
+            return 'YES'
+
+    def treatmentViaplug(self, viaplug, numcommande):
+        match viaplug:
+            case "Solderresin":
+                return "YES"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentViaplug] - " + str(numcommande) + " value : " + str(viaplug))
+
+    def treatmentIpc(self, ipc, numcommande):
+        match ipc:
+            case "class2":
+                return "" \
+                       ""
+            case "class3":
+                return "IPC_CLASS_3"
+            case _:
+                raise ValueError("[treatmentIpc] - " + str(numcommande) + " value : " + str(ipc))
+
+    def treatmentStencil(self, stencil, numcommande):
+        match stencil:
+            case "No":
+                return "NO"
+            case "Bottom":
+                return "BOTTOM"
+            case "Top":
+                return "TOP"
+            case "TopETBottom":
+                return "TOP_AND_BOTTOM"
+            case _:
+                raise ValueError("[treatmentStencil] - " + str(numcommande) + " value : " + str(stencil))
+
+    def treatmentPadreduction(self, padreduction, numcommande):
+        match padreduction:
+            case "yes":
+                return "YES"
+            case "no":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentPadreduction] - " + str(numcommande) + " value : " + str(padreduction))
+
+
+class Fiduciales:
+    def __init__(self, id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x,
+                 d_champ_y, numcommande):
+        self.id = id
         self.numcommande = numcommande
-        self.doyouneed = doyouneed
-        self.doyougerb = doyougerb
-        self.datecode = datecode
-        self.datecodewhere = datecodewhere
-        self.rohslogo = rohslogo
-        self.whererohlogo = whererohlogo
-        self.ullogo = ullogo
-        self.whereullogo = whereullogo
-        self.smallesttracewidth = smallesttracewidth
-        self.FinishedHoleDiameter = FinishedHoleDiameter
-        self.controlledimpedance = controlledimpedance
-        self.viainpad = viainpad
-        self.platedholes = platedholes
-        self.sideplating = sideplating
-        self.vcut = vcut
-        self.Countersunkholes = Countersunkholes
-        self.Edgebeveling = Edgebeveling
-        self.carbonprinting = carbonprinting
-        self.peelablemask = peelablemask
-        self.viaplug = viaplug
-        self.ipc = ipc
-        self.stencil = stencil
-        self.thickness = thickness
-        self.padreduction = padreduction
+        self.shape = self.treatmentShape(shape, numcommande)
+        self.a_champ_x = a_champ_x
+        self.a_champ_y = a_champ_y
+        self.b_champ_x = b_champ_x
+        self.b_champ_y = b_champ_y
+        self.c_champ_x = c_champ_x
+        self.c_champ_y = c_champ_y
+        self.d_champ_x = d_champ_x
+        self.d_champ_y = d_champ_y
+
+    def treatmentShape(self, shape, numcommande):
+        match shape:
+            case "square_rectangle":
+                return "SQUARE_RECTANGLE"
+            case "circle_oval":
+                return "CIRCLE_OVAL"
+            case _:
+                raise ValueError("[treatmentShape] - " + str(numcommande) + " value : " + str(shape))
 
 
 class BasicRequi:
     def __init__(self, id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, screen_printing,
                  color_screen, external_copper, base_copper, innerlayer, buildup):
+        self.id = id
         self.numcommande = numcommande
-        self.layer = layer
-        self.pcb_thickness = pcb_thickness
-        self.tg = tg
-        self.surface_treatment = surface_treatment
-        self.solder_mask = solder_mask
-        self.screen_printing = screen_printing
-        self.color_screen = color_screen
-        self.external_copper = external_copper
-        self.base_copper = base_copper
-        self.innerlayer = innerlayer
-        self.buildup = buildup
+        self.layer = self.treatmentLayer(layer, numcommande)
+        self.pcb_thickness = self.treatmentPcbThickness(pcb_thickness, numcommande)
+        self.tg = self.treatmentTg(tg, numcommande)
+        self.surface_treatment = self.treatmentSurfaceTreatment(surface_treatment, numcommande)
+        self.solder_mask = self.treatmentSolderMask(solder_mask, numcommande)
+        self.screen_printing = self.treatmentScreenPrinting(screen_printing, numcommande)
+        self.color_screen = self.treatmentColorScreen(color_screen, numcommande)
+        self.external_copper = self.treatmentExternalCopper(external_copper, numcommande)
+        self.base_copper = self.treatmentBaseCopper(base_copper, numcommande)
+        self.innerlayer = self.treatmentInnerLayer(innerlayer, numcommande)
+        self.buildup = self.treatmentBuildup(buildup, numcommande)
+
+    def treatmentLayer(self, layer, numcommande):
+        match layer:
+            case 1:
+                return "LAYERS_1"
+            case 2:
+                return "LAYERS_2"
+            case 4:
+                return "LAYERS_4"
+            case 6:
+                return "LAYERS_6"
+            case 8:
+                return "LAYERS_8"
+            case 10:
+                return "LAYERS_10"
+            case 12:
+                return "LAYERS_12"
+            case 14:
+                return "LAYERS_14"
+            case _:
+                raise ValueError("[treatmentLayer] - " + str(numcommande) + " value : " + str(layer))
+
+    def treatmentPcbThickness(self, pcb_thickness, numcommande):
+        match pcb_thickness:
+            case "0.4":
+                return "THICKNESS_0_4"
+            case "0.6":
+                return "THICKNESS_0_6"
+            case "0.8":
+                return "THICKNESS_0_8"
+            case "1.0":
+                return "THICKNESS_1_0"
+            case "1.2":
+                return "THICKNESS_1_2"
+            case "1.5":
+                return "THICKNESS_1_5"
+            case "1.6":
+                return "THICKNESS_1_6"
+            case "1.8":
+                return "THICKNESS_1_8"
+            case "2.0":
+                return "THICKNESS_2_0"
+            case "2.4":
+                return "THICKNESS_2_4"
+            case "2.8":
+                return "THICKNESS_2_8"
+            case "3.0":
+                return "THICKNESS_3_0"
+            case "3.2":
+                return "THICKNESS_3_2"
+            case _:
+                raise ValueError("[treatmentPcbThickness] - " + str(numcommande) + " value : " + str(pcb_thickness))
+
+    def treatmentTg(self, tg, numcommande):
+        match tg:
+            case "135":
+                return "GLASS_TRANSITION_135"
+            case "150":
+                return "GLASS_TRANSITION_150"
+            case "170":
+                return "GLASS_TRANSITION_170"
+            case _:
+                raise ValueError("[treatmentTg] - " + str(numcommande) + " value : " + str(tg))
+
+    def treatmentSurfaceTreatment(self, surface_treatment, numcommande):
+        match surface_treatment:
+            case "HALLeadFree":
+                return "HAL_LEAD_FREE"
+            case "ENIG":
+                return "ENIG"
+            case "ImmSilver":
+                return "IMMER_SILVER"
+            case "OSP":
+                return "OSP"
+            case "ImmTin":
+                return "IMMER_TIN"
+            case "HALwithlead":
+                return "HAL_WITH_LEAD"
+            case "NI-Pa-Gold":
+                return "NI_PA_GOLD"
+            case "enepig":
+                return "ENEPIG"
+            case "nosurfacetreatment":
+                return "NO_TREATMENT"
+            case _:
+                raise ValueError(
+                    "[treatmentSurfaceTreatment] - " + str(numcommande) + " value : " + str(surface_treatment))
+
+    def treatmentSolderMask(self, solderMask, numcommande):
+        match solderMask:
+            case "Green":
+                return "GREEN"
+            case "Blue":
+                return "BLUE"
+            case "Red":
+                return "RED"
+            case "White":
+                return "WHITE"
+            case "None":
+                return "NONE"
+            case "Black":
+                return "HAL_WITH_LEAD"
+            case "Black matte":
+                return "BLACK_MAT"
+            case "Black shinny":
+                return "BLACK_SHINNY"
+            case "Green Mat":
+                return "GREEN_MAT"
+            case _:
+                raise ValueError("[treatmentSolderMask] - " + str(numcommande) + " value : " + str(solderMask))
+
+    def treatmentScreenPrinting(self, screePrinting, numcommande):
+        match screePrinting:
+            case "No":
+                return "NO"
+            case "Top":
+                return "TOP"
+            case "Bottom":
+                return "BOTTOM"
+            case "Top & Bottom":
+                return "TOP_AND_BOTTOM"
+            case _:
+                raise ValueError("[treatmentScreenPrinting] - " + str(numcommande) + " value : " + str(screePrinting))
+
+    def treatmentColorScreen(self, colorScreen, numcommande):
+        match colorScreen:
+            case "Black":
+                return "BLACK"
+            case "White":
+                return "WHITE"
+            case "Red":
+                return "RED"
+            case "Yellow":
+                return "YELLOW"
+            case _:
+                return None
+
+    def treatmentExternalCopper(self, externalCopper, numcommande):
+        match externalCopper:
+            case "17/35":
+                return "COPPER_THICKNESS_17_35"
+            case "70/95":
+                return "COPPER_THICKNESS_70_95"
+            case "70/105":
+                return "COPPER_THICKNESS_70_105"
+            case "35/70":
+                return "COPPER_THICKNESS_35_70"
+            case "105/140":
+                return "COPPER_THICKNESS_105_140"
+            case "35/55":
+                return "COPPER_THICKNESS_35_55"
+            case "105/125":
+                return "COPPER_THICKNESS_105_125"
+            case _:
+                raise ValueError("[treatmentExternalCopper] - " + str(numcommande) + " value : " + str(externalCopper))
+
+    def treatmentBaseCopper(self, baseCopper, numcommande):
+        match baseCopper:
+            case "18":
+                return "COPPER_THICKNESS_18"
+            case "35":
+                return "COPPER_THICKNESS_35"
+            case "70":
+                return "COPPER_THICKNESS_70"
+            case "105":
+                return "COPPER_THICKNESS_105"
+            case _:
+                return None
+
+    def treatmentInnerLayer(self, innerLayer, numcommande):
+        match innerLayer:
+            case "18":
+                return "COPPER_THICKNESS_18"
+            case "35":
+                return "COPPER_THICKNESS_35"
+            case "70":
+                return "COPPER_THICKNESS_70"
+            case "105":
+                return "COPPER_THICKNESS_105"
+            case "140":
+                return "COPPER_THICKNESS_140"
+            case _:
+                return None
+
+    def treatmentBuildup(self, buildup, numcommande):
+        match buildup:
+            case "Standard":
+                return "NO"
+            case "Follow spec provided":
+                return "YES"
+            case _:
+                return None
 
 
 class Order:
@@ -85,7 +731,7 @@ class Order:
         self.qte = qte
         self.pays = pays
         self.livraison = livraison
-        self.reduction_delais = reduction_delais
+        self.reduction_delais = self.treatmentReductionDelais(numcommande, reduction_delais)
         self.valeur_unitprice = valeur_unitprice
         self.valeur_nbofpanel = valeur_nbofpanel
         self.valeur_totalpcbprice = valeur_totalpcbprice
@@ -101,10 +747,36 @@ class Order:
         self.currency = currency
         self.documents = documents
         self.date = date
-        self.statut = statut
+        self.statut = self.treatmentStatut(numcommande, statut)
         self.pao = pao
         self.messagecomplement = messagecomplement
         self.numerodelacommande = numerodelacommande
+
+    def treatmentReductionDelais(self, numcommande, reduction_delais):
+        if reduction_delais == "no":
+            return 0
+
+        if isinstance(int(reduction_delais), int):
+            return reduction_delais
+
+        raise ValueError("[treatmentReductionDelais] - " + str(numcommande) + " value : " + str(reduction_delais))
+
+    def treatmentStatut(self, numcommande, statut):
+        match statut:
+            case 0:
+                return "WAITING_PAYMENT"
+            case 1:
+                return "ENGINEERING_QUESTIONS"
+            case 2:
+                return "PRODUCTION"
+            case 3:
+                return "GOODS_FINISHED"
+            case 4:
+                return "WAITING_FOR_PAYMENT"
+            case 5:
+                return "BAD_FINISHED"
+            case _:
+                raise ValueError("[treatmentStatut] - " + str(numcommande) + " value : " + str(statut))
 
 
 def getOrders():
@@ -113,38 +785,49 @@ def getOrders():
                     "valeur_shippingcost, valeur_totalpcbpriceaftercost, valeur_prixstencil, valeur_reception_date," \
                     " valeur_prod_date, la_langue, ladevise, producttime, temps_reduction_par_defaut, currency, " \
                     "documents, date, statut, pao, messagecomplement, numerodelacommande " \
-                    "from commande"
+                    "from commande where date > '2020-01-01' limit 500"
 
     cursorMSQL.execute(query_members)
 
     results = cursorMSQL.fetchall()
 
     for row in results:
-        order = Order(*row)
-        orders.append(order)
+        try:
+            order = Order(*row)
+            orders.append(order)
+        except ValueError as e:
+            logging.error(str(row[3]) + " " + str(e))
 
 
 def setOrders():
+    good = 0
+    error = 0
+    total = 0
+
     select_user_id = "select id from \"user\" where ref = %s;"
 
-    insert_order = "INSERT INTO order (order_number, user_id, create_at, delivery_at, part_number, version, " \
+    insert_order = "INSERT INTO \"order\" (order_number, user_id, create_at, delivery_at, part_number, version, " \
                    "status_order, material_type," \
                    "purchased_order, quantity, country, reduce_prod_time_by, paste_mask_file, approve_gerber, stencil," \
                    "order_content_id, unit_cost, total, cost, shipping_cost, stencil_cost, production_time) " \
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s %s, %s, %s);"
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-    insert_order_content = "insert into order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
+    insert_order_content = "INSERT INTO order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
                            "is_design_by_customer, custom_panel_id, surface_treatment, solder_mask," \
                            "screen_printing_position, screen_printing_color, layers, thickness, glass_transition," \
                            "copper_thickness_base, copper_thickness_external, copper_thickness_internal, trace," \
-                           "finished_hole_size, impedance_control, plated_half_holes, via_in_pad, edge_side_plating," \
-                           "counter_sink_hole, edge_beveling, carbon_printing, peelable_mask, via_pluggling, ipc_class," \
-                           "jv_cut, serial_number, approvals, date_code, date_code_position, rohs_logo," \
-                           "rohs_logo_position, ul_logo, ul_logo_position, smt_stencil_position, stencil_thickness," \
-                           "stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment)" \
-                           "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
-                           "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
-                           "%s, %s, %s, %s); "
+                           "finished_hole_size, impedance_control, plated_half_holes, via_in_pad, edge_side_plating, " \
+                           "counter_sink_hole, edge_beveling, carbon_printing, peelable_mask, via_pluggling, ipc_class, " \
+                           "jv_cut, serial_number, approvals, date_code, date_code_position, rohs_logo, rohs_logo_position, ul_logo," \
+                           " ul_logo_position, smt_stencil_position, stencil_thickness, stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment)" \
+                           "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
+                           "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
+                           "%s, %s, %s); "
+
+    insert_custom_panel = "insert into custom_panel(id, pcb_width, pcb_length, number_pcb_x, number_pcb_y, " \
+                          "separation_method_x, separation_method_y, right_border, left_border, top_border, " \
+                          "bottom_border, spacing_x, spacing_y, fiducial_a, fiducial_b, fiducial_c, fiducial_d, shape) " \
+                          "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
     select_doyouneed_send = "select doyouneed_send from asksend_doyouneed where numcommande = %s;"
     select_teamgerb = "select teamgerb from asksend_gerb where numcommande = %s;"
@@ -160,45 +843,117 @@ def setOrders():
                        "Edgebeveling, carbonprinting, peelablemask, viaplug, ipc, stencil, thickness, padreduction " \
                        "from fr4_other where numcommande = %s;"
 
-    print(len(orders))
+    select_fr4_dimension = "select id, numcommande, panel, unit, unit_length, unit_width, paneltype, typeallpcb, varioostype," \
+                           "panel_lenght_allpcb, panel_width_allpcb, allpcbxout_allpcb, panel_allpcb," \
+                           "panel_varioos_lenght, panel_varioos_width, differentpcb_type, allpcbxout_varioos," \
+                           "panelpopup_unit_X, panelpopup_unit_Y, panelpopup_nbpcb_X, panelpopup_nbpcb_Y," \
+                           "panelpopup_border_top, panelpopup_border_bottom, panelpopup_border_right," \
+                           "panelpopup_border_left, popup_panel_separationX, popup_panel_separationY," \
+                           "panelpopup_spacing_X, panelpopup_spacing_Y, allpcbxout_popup, panel_popup_X, panel_popup_Y," \
+                           "panel_popup_nbPCB " \
+                           "from fr4_dimension where numcommande = %s;"
+
+    select_fiducial = "select id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x, d_champ_y, numcommande from fiduciales where numcommande = %s;"
+
+    print("Orders: " + str(len(orders)))
 
     for order in orders:
         try:
             uuid_order_content = str(uuid.uuid4())
+            uuid_custom_panel = str(uuid.uuid4())
 
             ref_values_ = (order.refmembre,)
             cursorPG.execute(select_user_id, ref_values_)
             uuid_user = cursorPG.fetchone()
 
+            if uuid_user == None:
+                raise ValueError("missing user")
+
             numcommand = (order.numcommande,)
 
             cursorMSQL.execute(select_fr4_basic_requi, numcommand)
-            select_fr4_basic_requi_result = cursorMSQL.fetchone()
+            select_fr4_basic_requi_result = cursorMSQL.fetchall()
 
+            if (len(select_fr4_basic_requi_result) == 0):
+                raise ValueError("BasicRequi missing")
+            if (len(select_fr4_basic_requi_result) > 1):
+                select_fr4_basic_requi_result = select_fr4_basic_requi_result[-1]
+            if (len(select_fr4_basic_requi_result) == 1):
+                select_fr4_basic_requi_result = select_fr4_basic_requi_result[0]
             basicRequi = BasicRequi(*select_fr4_basic_requi_result)
 
             cursorMSQL.execute(select_fr4_other, numcommand)
-            select_fr4_other_requi_result = cursorMSQL.fetchone()
+            select_fr4_other_requi_result = cursorMSQL.fetchall()
 
+            if (len(select_fr4_other_requi_result) == 0):
+                raise ValueError("Fr4Other missing")
+            if (len(select_fr4_other_requi_result) > 1):
+                select_fr4_other_requi_result = select_fr4_other_requi_result[-1]
+            if (len(select_fr4_other_requi_result) == 1):
+                select_fr4_other_requi_result = select_fr4_other_requi_result[0]
             fr4Other = Fr4Other(*select_fr4_other_requi_result)
 
-            print(fr4Other.thickness)
+            cursorMSQL.execute(select_fr4_dimension, numcommand)
+            select_fr4_dimension_result = cursorMSQL.fetchall()
 
-            # order_content_values_ = (uuid_order_content, type_design, length, width, quantity_pcb_panel, cross_board,
-            #                          quantity_different_pcb_type,
-            #                          is_design_by_customer, None, basicRequi.surface_treatment, basicRequi.solder_mask,
-            #                          basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
-            #                          basicRequi.pcb_thickness,
-            #                          basicRequi.tg,
-            #                          basicRequi.base_copper, basicRequi.external_copper, basicRequi.innerlayer, fr4Other.smallesttracewidth,
-            #                          fr4Other.FinishedHoleDiameter, fr4Other.controlledimpedance, fr4Other.platedholes, fr4Other.viainpad,
-            #                          fr4Other.sideplating,
-            #                          fr4Other.Countersunkholes, fr4Other.Edgebeveling, fr4Other.carbonprinting, fr4Other.peelablemask, fr4Other.viaplug,
-            #                          fr4Other.ipc,
-            #                          fr4Other.vcut, 'NO', 'NO', fr4Other.datecode, fr4Other.datecodewhere, fr4Other.rohslogo,
-            #                          fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo, fr4Other.stencil,
-            #                          fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb, order.messagecomplement)
+            if (len(select_fr4_dimension_result) == 0):
+                raise ValueError("Fr4Dimension missing")
+            if (len(select_fr4_dimension_result) > 1):
+                select_fr4_dimension_result = select_fr4_dimension_result[-1]
+            if (len(select_fr4_dimension_result) == 1):
+                select_fr4_dimension_result = select_fr4_dimension_result[0]
+            fr4Dimension = Fr4Dimension(*select_fr4_dimension_result)
 
+            quantity_pcb_panel = None
+
+            if fr4Dimension.paneltype == "MULTI":
+                cursorMSQL.execute(select_fiducial, numcommand)
+                fiducial = cursorMSQL.fetchall()
+
+                if (len(fiducial) == 0):
+                    raise ValueError("Fr4Dimension missing")
+                if (len(fiducial) > 1):
+                    fiducial = fiducial[-1]
+                if (len(fiducial) == 1):
+                    fiducial = fiducial[0]
+                fiducialResult = Fiduciales(*fiducial)
+
+                print("numcommand: " + str(numcommand))
+
+                quantity_pcb_panel = fr4Dimension.panel_popup_nbPCB
+
+                insert_custom_panel_values_ = (
+                    uuid_custom_panel, fr4Dimension.panel_width_allpcb, fr4Dimension.panel_lenght_allpcb,
+                    fr4Dimension.panelpopup_nbpcb_X, fr4Dimension.panelpopup_nbpcb_Y,
+                    fr4Dimension.popup_panel_separationX, fr4Dimension.popup_panel_separationY,
+                    fr4Dimension.panelpopup_border_right, fr4Dimension.panelpopup_border_left,
+                    fr4Dimension.panelpopup_border_top, fr4Dimension.panelpopup_border_bottom,
+                    fr4Dimension.panelpopup_spacing_X, fr4Dimension.panelpopup_spacing_Y,
+                    str(fiducialResult.a_champ_x) + ";" + str(fiducialResult.a_champ_y),
+                    str(fiducialResult.b_champ_x) + ";" + str(fiducialResult.b_champ_y),
+                    str(fiducialResult.c_champ_x) + ";" + str(fiducialResult.c_champ_y),
+                    str(fiducialResult.d_champ_x) + ";" + str(fiducialResult.d_champ_y),
+                    fiducialResult.shape)
+                cursorPG.execute(insert_custom_panel, insert_custom_panel_values_)
+
+            order_content_values_ = (
+                uuid_order_content, fr4Dimension.paneltype, fr4Dimension.panel_lenght_allpcb,
+                fr4Dimension.panel_width_allpcb,
+                quantity_pcb_panel, None,
+                None,
+                basicRequi.buildup, uuid_custom_panel, basicRequi.surface_treatment, basicRequi.solder_mask,
+                basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
+                basicRequi.pcb_thickness,
+                basicRequi.tg,
+                basicRequi.base_copper, basicRequi.external_copper, basicRequi.innerlayer, fr4Other.smallesttracewidth,
+                fr4Other.FinishedHoleDiameter, fr4Other.controlledimpedance, fr4Other.platedholes, fr4Other.viainpad,
+                fr4Other.sideplating, fr4Other.countersunkholes, fr4Other.edgebeveling, fr4Other.carbonprinting,
+                fr4Other.peelablemask, fr4Other.viaplug, fr4Other.ipc, fr4Other.vcut, 'NO', 'NO', fr4Other.datecode,
+                fr4Other.datecodewhere, fr4Other.rohslogo, fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo,
+                fr4Other.stencil, fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb,
+                order.messagecomplement)
+
+            cursorPG.execute(insert_order_content, order_content_values_)
 
             cursorMSQL.execute(select_doyouneed_send, numcommand)
             select_doyouneed_send_results = cursorMSQL.fetchone()
@@ -213,18 +968,48 @@ def setOrders():
             select_teamgerb_results_value = get_value_asksend(select_teamgerb_results)
             select_teamstencilask_results_value = get_value_asksend(select_teamstencilask_results)
 
-            # order_values_ = (
-            #     order.numcommande, uuid_user[0], order.date, order.livraison, order.partnumber, order.version,
-            #     order.statut,
-            #     order.typecommande, '',
-            #     order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
-            #     select_teamgerb_results_value, select_teamstencilask_results_value, '', order.valeur_unitprice,
-            #     order.valeur_totalpcbprice, order.valeur_totalpcbpriceaftercost, order.valeur_shippingcost,
-            #     order.valeur_prixstencil, order.producttime)
-            # cursorPG.execute(insert_order, order_values_)
+            order_values_ = (
+                order.numcommande, uuid_user[0], order.date, order.date, order.partnumber, order.version,
+                order.statut, order.typecommande,
+                order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
+                str(order.valeur_unitprice),
+                str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
+                str(order.valeur_shippingcost),
+                str(order.valeur_prixstencil), order.producttime)
 
-        except ValueError:
-            logging.error(order.refmembre + " corresponding to " + str(uuid_user))
+            cursorPG.execute(insert_order, order_values_)
+            conn.commit()
+
+        except ValueError as e:
+            logging.error("[ValueError] -" + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except TypeError as e:
+            logging.error("[TypeError] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.SyntaxError as e:
+            logging.error("[StringDataRightTruncation] - " +  str(order.numcommande), exc_info=False)
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.StringDataRightTruncation as e:
+            logging.error("[StringDataRightTruncation] - " + str(order.numcommande) + " " + e.pgerror.replace("\n", ""))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.InFailedSqlTransaction as e:
+            logging.error("[InFailedSqlTransaction] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except mysql.connector.errors.InternalError as e:
+            logging.error("[mysql-InternalError] - " + str(order.numcommande))
+            conn.rollback()
+            error += 1
+        total += 1
+        print(total)
+
+    logging.info(
+        "[setUserInformationShipping] - error: " + str(error) + " / " + " good: " + str(good) + " total: " + str(total))
 
 
 if __name__ == '__main__':

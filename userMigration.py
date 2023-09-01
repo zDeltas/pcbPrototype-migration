@@ -264,7 +264,8 @@ def setUserInformationShipping():
 
         except ValueError:
             logging.error(information.ref + " corresponding to " + str(uuid_user))
-
+            conn.rollback()
+            error += 1
         except psycopg2.errors.SyntaxError as e:
             logging.error(information.ref, exc_info=False)
             conn.rollback()
