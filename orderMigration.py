@@ -1,3 +1,5 @@
+import re
+
 import mysql
 import psycopg2.errors
 from phpserialize import unserialize
@@ -71,10 +73,10 @@ class Fr4Dimension:
         return None
 
     def treatmentUnitLength(self, numcommande, unit_length):
-        return None
+        return unit_length
 
     def treatmentUnitWidth(self, numcommande, unit_width):
-        return None
+        return unit_width
 
     def treatmentPaneltype(self, numcommande, paneltype):
         match paneltype:
@@ -87,15 +89,29 @@ class Fr4Dimension:
             case "VariousPCB":
                 return "VARIOUS"
             case "AllPCBsidentical":
-                return "AllPCBsidentical"
+                return "MULTI"
             case _:
                 raise ValueError("[treatmentPaneltype] - " + str(numcommande) + " value : " + str(paneltype))
 
     def treatmentTypeallpcb(self, numcommande, typeallpcb):
-        return None
+        match typeallpcb:
+            case "advanced_design":
+                return "YES"
+            case "basicpanel":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentTypeallpcb] - " + str(numcommande) + " value : " + str(typeallpcb))
 
     def treatmentVarioostype(self, numcommande, varioostype):
-        return None
+        match varioostype:
+            case "paneldesigncustomer":
+                return "YES"
+            case "paneldesignmadeby":
+                return "NO"
+            case 1:
+                return "YES"
+            case _:
+                raise ValueError("[treatmentTypeallpcb] - " + str(numcommande) + " value : " + str(varioostype))
 
     def treatmentPanelLenghtAllpcb(self, numcommande, panel_lenght_allpcb):
         return panel_lenght_allpcb
@@ -104,28 +120,36 @@ class Fr4Dimension:
         return panel_width_allpcb
 
     def treatmentAllpcbxoutAllpcb(self, numcommande, allpcbxout_allpcb):
-        return None
+        match allpcbxout_allpcb:
+            case "Yes":
+                return "YES"
+            case "No":
+                return "NO"
+            case "":
+                return "NO"
+            case _:
+                raise ValueError("[treatmentAllpcbxoutAllpcb] - " + str(numcommande) + " value : " + str(allpcbxout_allpcb))
 
     def treatmentPanelAllpcb(self, numcommande, panel_allpcb):
         return None
 
     def treatmentPanelVarioosLenght(self, numcommande, panel_varioos_lenght):
-        return None
+        return panel_varioos_lenght
 
     def treatmentPanelVarioosWidth(self, numcommande, panel_varioos_width):
-        return None
+        return panel_varioos_width
 
     def treatmentDifferentpcbType(self, numcommande, differentpcb_type):
-        return None
+        return differentpcb_type
 
     def treatmentAllpcbxoutVarioos(self, numcommande, allpcbxout_varioos):
-        return None
+        return allpcbxout_varioos
 
     def treatmentPanelpopupUnitX(self, numcommande, panelpopup_unit_X):
-        return None
+        return panelpopup_unit_X
 
     def treatmentPanelpopupUnitY(self, numcommande, panelpopup_unit_Y):
-        return None
+        return panelpopup_unit_Y
 
     def treatmentPanelpopupNbpcbX(self, numcommande, panelpopup_nbpcb_X):
         return panelpopup_nbpcb_X
@@ -184,22 +208,28 @@ class Fr4Dimension:
                 return "NO_SEPERATION"
 
     def treatmentPanelpopupSpacingX(self, numcommande, panelpopup_spacing_X):
-        return panelpopup_spacing_X
+        if panelpopup_spacing_X == '':
+            return '0'
+        else:
+            return panelpopup_spacing_X
 
     def treatmentPanelpopupSpacingY(self, numcommande, panelpopup_spacing_Y):
-        return panelpopup_spacing_Y
+        if panelpopup_spacing_Y == '':
+            return '0'
+        else:
+            return panelpopup_spacing_Y
 
     def treatmentAllpcbxoutPopup(self, numcommande, allpcbxout_popup):
-        return None
+        return allpcbxout_popup
 
     def treatmentPanelPopupX(self, numcommande, panel_popup_X):
-        return None
+        return panel_popup_X
 
     def treatmentPanelPopupY(self, numcommande, panel_popup_Y):
-        return None
+        return panel_popup_Y
 
     def treatmentPanelPopupNbPcb(self, numcommande, panel_popup_nbPCB):
-        return None
+        return panel_popup_nbPCB
 
 
 class Fr4Other:
@@ -450,10 +480,11 @@ class Fr4Other:
     def treatmentIpc(self, ipc, numcommande):
         match ipc:
             case "class2":
-                return "" \
-                       ""
+                return "IPC_CLASS_2"
             case "class3":
                 return "IPC_CLASS_3"
+            case "":
+                return "NA"
             case _:
                 raise ValueError("[treatmentIpc] - " + str(numcommande) + " value : " + str(ipc))
 
@@ -524,6 +555,8 @@ class BasicRequi:
 
     def treatmentLayer(self, layer, numcommande):
         match layer:
+            case 0:
+                return "LAYERS_0"
             case 1:
                 return "LAYERS_1"
             case 2:
@@ -738,13 +771,13 @@ class Order:
         self.valeur_shippingcost = valeur_shippingcost
         self.valeur_totalpcbpriceaftercost = valeur_totalpcbpriceaftercost
         self.valeur_prixstencil = valeur_prixstencil
-        self.valeur_reception_date = valeur_reception_date
+        self.valeur_reception_date = self.treatmentValeurDate(valeur_reception_date)
         self.valeur_prod_date = valeur_prod_date
         self.la_langue = la_langue
         self.ladevice = ladevice
-        self.producttime = producttime
+        self.producttime = self.treatmentProductTime(numcommande, producttime)
         self.temps_reduction_par_defaut = temps_reduction_par_defaut
-        self.currency = currency
+        self.currency = self.treatmentCurrency(numcommande, currency)
         self.documents = documents
         self.date = date
         self.statut = self.treatmentStatut(numcommande, statut)
@@ -773,10 +806,29 @@ class Order:
                 return "GOODS_FINISHED"
             case 4:
                 return "WAITING_FOR_PAYMENT"
-            case 5:
-                return "BAD_FINISHED"
             case _:
                 raise ValueError("[treatmentStatut] - " + str(numcommande) + " value : " + str(statut))
+
+    def treatmentProductTime(self, numcommande, producttime):
+        chiffres = re.findall(r'\d+', producttime)
+
+        if chiffres:
+            return int(chiffres[0])
+        return -1
+
+    def treatmentValeurDate(self, valeur_prod_date):
+        if valeur_prod_date == '' or valeur_prod_date == 'n/a':
+            return None
+        return valeur_prod_date
+
+    def treatmentCurrency(self, numcommande, currency):
+        match currency:
+            case "usd":
+                return "USD"
+            case "euro":
+                return "EUR"
+            case _:
+                raise ValueError("[treatmentCurrency] - " + str(numcommande) + " value : " + str(currency))
 
 
 def getOrders():
@@ -785,7 +837,8 @@ def getOrders():
                     "valeur_shippingcost, valeur_totalpcbpriceaftercost, valeur_prixstencil, valeur_reception_date," \
                     " valeur_prod_date, la_langue, ladevise, producttime, temps_reduction_par_defaut, currency, " \
                     "documents, date, statut, pao, messagecomplement, numerodelacommande " \
-                    "from commande where date > '2020-01-01' limit 500"
+                    "from commande where date > '2023-05-01' and typecommande = 'FR4'"
+                    # "from commande where date > '2020-01-01' and typecommande = 'FR4'"
 
     cursorMSQL.execute(query_members)
 
@@ -796,7 +849,7 @@ def getOrders():
             order = Order(*row)
             orders.append(order)
         except ValueError as e:
-            logging.error(str(row[3]) + " " + str(e))
+            logging.error("[ValueError] - " + str(row[3]) + " " + str(e))
 
 
 def setOrders():
@@ -806,11 +859,17 @@ def setOrders():
 
     select_user_id = "select id from \"user\" where ref = %s;"
 
-    insert_order = "INSERT INTO \"order\" (order_number, user_id, create_at, delivery_at, part_number, version, " \
+    insert_order = "INSERT INTO \"order\" (order_number, user_id, create_at, product_at, delivery_at, part_number, version, " \
                    "status_order, material_type," \
-                   "purchased_order, quantity, country, reduce_prod_time_by, paste_mask_file, approve_gerber, stencil," \
-                   "order_content_id, unit_cost, total, cost, shipping_cost, stencil_cost, production_time) " \
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+                   "purchased_order, quantity, shipping_destination_id, reduce_prod_time_by, paste_mask_file, approve_gerber, stencil," \
+                   "order_content_id, unit_cost, total, cost, shipping_cost, stencil_cost, production_time, reorder_number, currency) " \
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+
+    insert_history = "INSERT INTO history (order_number, user_id, create_at, product_at, delivery_at, part_number, version, status_order," \
+                     "material_type, purchased_order, tracking_number, quantity, shipping_destination_id, reduce_prod_time_by," \
+                     "paste_mask_file, approve_gerber, stencil, order_content_id, unit_cost, total, cost, shipping_cost," \
+                     "stencil_cost, production_time, reorder_number, currency) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
     insert_order_content = "INSERT INTO order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
                            "is_design_by_customer, custom_panel_id, surface_treatment, solder_mask," \
@@ -858,6 +917,8 @@ def setOrders():
     print("Orders: " + str(len(orders)))
 
     for order in orders:
+        print(str(total) + "/" + str(len(orders)) + " - " + str(order.numcommande))
+
         try:
             uuid_order_content = str(uuid.uuid4())
             uuid_custom_panel = str(uuid.uuid4())
@@ -918,12 +979,8 @@ def setOrders():
                     fiducial = fiducial[0]
                 fiducialResult = Fiduciales(*fiducial)
 
-                print("numcommand: " + str(numcommand))
-
-                quantity_pcb_panel = fr4Dimension.panel_popup_nbPCB
-
                 insert_custom_panel_values_ = (
-                    uuid_custom_panel, fr4Dimension.panel_width_allpcb, fr4Dimension.panel_lenght_allpcb,
+                    uuid_custom_panel, fr4Dimension.panelpopup_unit_X, fr4Dimension.panelpopup_unit_Y,
                     fr4Dimension.panelpopup_nbpcb_X, fr4Dimension.panelpopup_nbpcb_Y,
                     fr4Dimension.popup_panel_separationX, fr4Dimension.popup_panel_separationY,
                     fr4Dimension.panelpopup_border_right, fr4Dimension.panelpopup_border_left,
@@ -935,13 +992,47 @@ def setOrders():
                     str(fiducialResult.d_champ_x) + ";" + str(fiducialResult.d_champ_y),
                     fiducialResult.shape)
                 cursorPG.execute(insert_custom_panel, insert_custom_panel_values_)
+            else:
+                uuid_custom_panel = None
+
+            dimension_length = None
+            dimension_width = None
+            isDesignByCustomer = None
+            xout = None
+            quantity_different_pcb_type = None
+
+            if fr4Dimension.paneltype == "MULTI":
+                if fr4Dimension.typeallpcb == "YES":
+                    dimension_length = fr4Dimension.panel_popup_Y
+                    dimension_width = fr4Dimension.panel_popup_X
+                else:
+                    dimension_length = fr4Dimension.panel_lenght_allpcb
+                    dimension_width = fr4Dimension.panel_width_allpcb
+                isDesignByCustomer = fr4Dimension.typeallpcb
+                xout = fr4Dimension.allpcbxout_allpcb
+                quantity_pcb_panel = fr4Dimension.panel_popup_nbPCB
+
+            if fr4Dimension.paneltype == "UNIT":
+                dimension_length = fr4Dimension.unit_length
+                dimension_width = fr4Dimension.unit_width
+
+            if fr4Dimension.paneltype == "VARIOUS":
+                dimension_length = fr4Dimension.panel_varioos_lenght
+                dimension_width = fr4Dimension.panel_varioos_width
+                isDesignByCustomer = fr4Dimension.varioostype
+                xout = fr4Dimension.allpcbxout_allpcb
+                quantity_different_pcb_type = fr4Dimension.differentpcb_type
+                quantity_pcb_panel = fr4Dimension.allpcbxout_varioos
+
+            if dimension_length == None or dimension_width == None:
+                raise ValueError("Dimension length ou dimension width erreur")
 
             order_content_values_ = (
-                uuid_order_content, fr4Dimension.paneltype, fr4Dimension.panel_lenght_allpcb,
-                fr4Dimension.panel_width_allpcb,
-                quantity_pcb_panel, None,
-                None,
-                basicRequi.buildup, uuid_custom_panel, basicRequi.surface_treatment, basicRequi.solder_mask,
+                uuid_order_content, fr4Dimension.paneltype, dimension_length,
+                dimension_width,
+                quantity_pcb_panel, xout,
+                quantity_different_pcb_type,
+                isDesignByCustomer, uuid_custom_panel, basicRequi.surface_treatment, basicRequi.solder_mask,
                 basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
                 basicRequi.pcb_thickness,
                 basicRequi.tg,
@@ -968,21 +1059,40 @@ def setOrders():
             select_teamgerb_results_value = get_value_asksend(select_teamgerb_results)
             select_teamstencilask_results_value = get_value_asksend(select_teamstencilask_results)
 
-            order_values_ = (
-                order.numcommande, uuid_user[0], order.date, order.date, order.partnumber, order.version,
-                order.statut, order.typecommande,
-                order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
-                select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
-                str(order.valeur_unitprice),
-                str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
-                str(order.valeur_shippingcost),
-                str(order.valeur_prixstencil), order.producttime)
+            if order.statut == "GOODS_FINISHED":
+                history_values_ = (
+                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
+                    order.partnumber, order.version,
+                    order.statut, order.typecommande,
+                    order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                    select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
+                    str(order.valeur_unitprice),
+                    str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_shippingcost),
+                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
+                cursorPG.execute(insert_history, history_values_)
+                conn.commit()
+                good += 1
 
-            cursorPG.execute(insert_order, order_values_)
-            conn.commit()
+            else:
+                order_values_ = (
+                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
+                    order.partnumber,
+                    order.version,
+                    order.statut, order.typecommande,
+                    order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                    select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
+                    str(order.valeur_unitprice),
+                    str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_shippingcost),
+                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
+
+                cursorPG.execute(insert_order, order_values_)
+                conn.commit()
+                good += 1
 
         except ValueError as e:
-            logging.error("[ValueError] -" + str(order.numcommande) + " " + str(e))
+            logging.error("[ValueError] - " + str(order.numcommande) + " " + str(e))
             conn.rollback()
             error += 1
         except TypeError as e:
@@ -990,7 +1100,7 @@ def setOrders():
             conn.rollback()
             error += 1
         except psycopg2.errors.SyntaxError as e:
-            logging.error("[StringDataRightTruncation] - " +  str(order.numcommande), exc_info=False)
+            logging.error("[StringDataRightTruncation] - " + str(order.numcommande), exc_info=False)
             conn.rollback()
             error += 1
         except psycopg2.errors.StringDataRightTruncation as e:
@@ -1005,11 +1115,18 @@ def setOrders():
             logging.error("[mysql-InternalError] - " + str(order.numcommande))
             conn.rollback()
             error += 1
+        except psycopg2.errors.InvalidDatetimeFormat as e:
+            logging.error("[InvalidDatetimeFormat] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.UniqueViolation as e:
+            logging.error("[UniqueViolation] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
         total += 1
-        print(total)
 
     logging.info(
-        "[setUserInformationShipping] - error: " + str(error) + " / " + " good: " + str(good) + " total: " + str(total))
+        "error: " + str(error) + " / " + " good: " + str(good) + " total: " + str(total))
 
 
 if __name__ == '__main__':

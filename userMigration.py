@@ -130,6 +130,7 @@ def setUser():
                              "VALUES (%s, %s);"
 
     for user in members:
+        print(str(total) + "/" + str(len(informations)) + " - " + str(user.ref))
         try:
             uuid_user = str(uuid.uuid4())
             uuid_additional = str(uuid.uuid4())
@@ -185,6 +186,7 @@ def setUserInformationBilling():
                           "VALUES (%s, %s);"
 
     for information in informations:
+        print(str(total) + "/" + str(len(informations)) + " - " + str(information.ref))
         try:
             information_values_ = (information.ref,)
             cursorPG.execute(select_user_id, information_values_)
@@ -240,6 +242,7 @@ def setUserInformationShipping():
                            "VALUES (%s, %s);"
 
     for information in informations:
+        print(str(total) + "/" + str(len(informations)) + " - " + str(information.ref))
         try:
             information_values_ = (information.ref,)
             cursorPG.execute(select_user_id, information_values_)
@@ -296,6 +299,7 @@ def setUserInformationEngineer():
                            "VALUES (%s, %s);"
 
     for information in informations:
+        print(str(total) + "/" + str(len(informations)) + " - " + str(information.ref))
         try:
             information_values_ = (information.ref,)
             cursorPG.execute(select_user_id, information_values_)
@@ -350,6 +354,7 @@ def setUserInformationPurchasingDepartment():
                                         "VALUES (%s, %s);"
 
     for information in informations:
+        print(str(total) + "/" + str(len(informations)) + " - " + str(information.ref))
         try:
             information_values_ = (information.ref,)
             cursorPG.execute(select_user_id, information_values_)
