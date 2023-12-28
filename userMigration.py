@@ -119,12 +119,12 @@ def setUser():
     error = 0
     total = 0
 
-    insert_user = "INSERT INTO \"user\"(id, name, firstname, email, phone, old_password, ref, password) " \
-                  "VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
+    insert_user = "INSERT INTO \"user\"(id, name, firstname, email, phone, old_password, ref, password, created_at) " \
+                  "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-    insert_additional = "INSERT INTO additional(id, company_name, address, zip_code, city, country, create_at, " \
+    insert_additional = "INSERT INTO additional(id, company_name, address, zip_code, city, country, " \
                         "payment_term) " \
-                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
+                        "VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
     insert_user_additional = "INSERT INTO user_additional(user_id, additional_id)" \
                              "VALUES (%s, %s);"
@@ -135,7 +135,7 @@ def setUser():
             uuid_user = str(uuid.uuid4())
             uuid_additional = str(uuid.uuid4())
 
-            user_values_ = (uuid_user, user.nom, user.prenom, user.email, user.tel, user.passe, user.ref, "")
+            user_values_ = (uuid_user, user.nom, user.prenom, user.email, user.tel, user.passe, user.ref, "firstlogin", user.date)
             cursorPG.execute(insert_user, user_values_)
 
             term = "PAYMENT_IN_ADVANCE"
@@ -144,7 +144,7 @@ def setUser():
                 term = "NET_30_DAYS"
 
             additional_values_ = (uuid_additional, user.nomsociete, user.adresse, user.cp,
-                                  user.ville, user.pays, user.date, term)
+                                  user.ville, user.pays, term)
             cursorPG.execute(insert_additional, additional_values_)
 
             user_additional_values_ = (uuid_user, uuid_additional)
