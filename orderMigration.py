@@ -15,12 +15,10 @@ informations = []
 
 
 def get_value_asksend(t):
-    if isinstance(t, tuple) and len(t) == 0:
-        return "ASK"
-    elif isinstance(t, tuple) and len(t) == 1:
+    if isinstance(t, tuple) and len(t) == 1:
         return "DONE"
     else:
-        return "NONE"
+        return 'NONE'
 
 
 class Fr4Dimension:
@@ -67,10 +65,10 @@ class Fr4Dimension:
         self.panel_popup_nbPCB = self.treatmentPanelPopupNbPcb(numcommande, panel_popup_nbPCB)
 
     def treatmentPanel(self, numcommande, panel):
-        return None
+        return panel
 
     def treatmentUnit(self, numcommande, unit):
-        return None
+        return unit
 
     def treatmentUnitLength(self, numcommande, unit_length):
         return unit_length
@@ -100,7 +98,7 @@ class Fr4Dimension:
             case "basicpanel":
                 return "NO"
             case _:
-                raise ValueError("[treatmentTypeallpcb] - " + str(numcommande) + " value : " + str(typeallpcb))
+                return None
 
     def treatmentVarioostype(self, numcommande, varioostype):
         match varioostype:
@@ -111,7 +109,7 @@ class Fr4Dimension:
             case 1:
                 return "YES"
             case _:
-                raise ValueError("[treatmentTypeallpcb] - " + str(numcommande) + " value : " + str(varioostype))
+                return None
 
     def treatmentPanelLenghtAllpcb(self, numcommande, panel_lenght_allpcb):
         return panel_lenght_allpcb
@@ -132,7 +130,7 @@ class Fr4Dimension:
                     "[treatmentAllpcbxoutAllpcb] - " + str(numcommande) + " value : " + str(allpcbxout_allpcb))
 
     def treatmentPanelAllpcb(self, numcommande, panel_allpcb):
-        return None
+        return panel_allpcb
 
     def treatmentPanelVarioosLenght(self, numcommande, panel_varioos_lenght):
         return panel_varioos_lenght
@@ -709,7 +707,7 @@ class BasicRequi:
             case "105/125":
                 return "COPPER_THICKNESS_105_125"
             case _:
-                raise ValueError("[treatmentExternalCopper] - " + str(numcommande) + " value : " + str(externalCopper))
+                return None
 
     def treatmentBaseCopper(self, baseCopper, numcommande):
         match baseCopper:
@@ -807,6 +805,8 @@ class Order:
                 return "GOODS_FINISHED"
             case 4:
                 return "WAITING_FOR_PAYMENT"
+            case 5:
+                return "DELETE"
             case _:
                 raise ValueError("[treatmentStatut] - " + str(numcommande) + " value : " + str(statut))
 
@@ -845,6 +845,7 @@ def getOrders():
 
     results = cursorMSQL.fetchall()
 
+ 
     for row in results:
         try:
             order = Order(*row)
@@ -915,215 +916,228 @@ def setOrders():
 
     select_fiducial = "select id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x, d_champ_y, numcommande from fiduciales where numcommande = %s;"
 
-    print("Orders: " + str(len(orders)))
+    # print("Orders: " + str(len(orders)))
 
     for order in orders:
         print(str(total) + "/" + str(len(orders)) + " - " + str(order.numcommande))
 
-    try:
-        uuid_order_content = str(uuid.uuid4())
-        uuid_custom_panel = str(uuid.uuid4())
+        try:
+            uuid_order_content = str(uuid.uuid4())
+            uuid_custom_panel = str(uuid.uuid4())
 
-        ref_values_ = (order.refmembre,)
-        cursorPG.execute(select_user_id, ref_values_)
-        uuid_user = cursorPG.fetchone()
+            ref_values_ = (order.refmembre,)
+            cursorPG.execute(select_user_id, ref_values_)
+            uuid_user = cursorPG.fetchone()
 
-        if uuid_user == None:
-            raise ValueError("missing user")
+            if uuid_user == None:
+                raise ValueError("missing user")
 
-        numcommand = (order.numcommande,)
+            numcommand = (order.numcommande,)
 
-        cursorMSQL.execute(select_fr4_basic_requi, numcommand)
-        select_fr4_basic_requi_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_fr4_basic_requi, numcommand)
+            select_fr4_basic_requi_result = cursorMSQL.fetchall()
 
-        if (len(select_fr4_basic_requi_result) == 0):
-            raise ValueError("BasicRequi missing")
-        if (len(select_fr4_basic_requi_result) > 1):
-            select_fr4_basic_requi_result = select_fr4_basic_requi_result[-1]
-        if (len(select_fr4_basic_requi_result) == 1):
-            select_fr4_basic_requi_result = select_fr4_basic_requi_result[0]
-        basicRequi = BasicRequi(*select_fr4_basic_requi_result)
+            if (len(select_fr4_basic_requi_result) == 0):
+                raise ValueError("BasicRequi missing")
+            if (len(select_fr4_basic_requi_result) > 1):
+                select_fr4_basic_requi_result = select_fr4_basic_requi_result[-1]
+            if (len(select_fr4_basic_requi_result) == 1):
+                select_fr4_basic_requi_result = select_fr4_basic_requi_result[0]
+            basicRequi = BasicRequi(*select_fr4_basic_requi_result)
 
-        cursorMSQL.execute(select_fr4_other, numcommand)
-        select_fr4_other_requi_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_fr4_other, numcommand)
+            select_fr4_other_requi_result = cursorMSQL.fetchall()
 
-        if (len(select_fr4_other_requi_result) == 0):
-            raise ValueError("Fr4Other missing")
-        if (len(select_fr4_other_requi_result) > 1):
-            select_fr4_other_requi_result = select_fr4_other_requi_result[-1]
-        if (len(select_fr4_other_requi_result) == 1):
-            select_fr4_other_requi_result = select_fr4_other_requi_result[0]
-        fr4Other = Fr4Other(*select_fr4_other_requi_result)
+            if (len(select_fr4_other_requi_result) == 0):
+                raise ValueError("Fr4Other missing")
+            if (len(select_fr4_other_requi_result) > 1):
+                select_fr4_other_requi_result = select_fr4_other_requi_result[-1]
+            if (len(select_fr4_other_requi_result) == 1):
+                select_fr4_other_requi_result = select_fr4_other_requi_result[0]
+            fr4Other = Fr4Other(*select_fr4_other_requi_result)
 
-        cursorMSQL.execute(select_fr4_dimension, numcommand)
-        select_fr4_dimension_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_fr4_dimension, numcommand)
+            select_fr4_dimension_result = cursorMSQL.fetchall()
 
-        if (len(select_fr4_dimension_result) == 0):
-            raise ValueError("Fr4Dimension missing")
-        if (len(select_fr4_dimension_result) > 1):
-            select_fr4_dimension_result = select_fr4_dimension_result[-1]
-        if (len(select_fr4_dimension_result) == 1):
-            select_fr4_dimension_result = select_fr4_dimension_result[0]
-        fr4Dimension = Fr4Dimension(*select_fr4_dimension_result)
-
-        quantity_pcb_panel = None
-
-        if fr4Dimension.paneltype == "MULTI":
-            cursorMSQL.execute(select_fiducial, numcommand)
-            fiducial = cursorMSQL.fetchall()
-
-            if (len(fiducial) == 0):
+            if (len(select_fr4_dimension_result) == 0):
                 raise ValueError("Fr4Dimension missing")
-            if (len(fiducial) > 1):
-                fiducial = fiducial[-1]
-            if (len(fiducial) == 1):
-                fiducial = fiducial[0]
-            fiducialResult = Fiduciales(*fiducial)
+            if (len(select_fr4_dimension_result) > 1):
+                select_fr4_dimension_result = select_fr4_dimension_result[-1]
+            if (len(select_fr4_dimension_result) == 1):
+                select_fr4_dimension_result = select_fr4_dimension_result[0]
+            fr4Dimension = Fr4Dimension(*select_fr4_dimension_result)
 
-            insert_custom_panel_values_ = (
-                uuid_custom_panel, fr4Dimension.panelpopup_unit_X, fr4Dimension.panelpopup_unit_Y,
-                fr4Dimension.panelpopup_nbpcb_X, fr4Dimension.panelpopup_nbpcb_Y,
-                fr4Dimension.popup_panel_separationX, fr4Dimension.popup_panel_separationY,
-                fr4Dimension.panelpopup_border_right, fr4Dimension.panelpopup_border_left,
-                fr4Dimension.panelpopup_border_top, fr4Dimension.panelpopup_border_bottom,
-                fr4Dimension.panelpopup_spacing_X, fr4Dimension.panelpopup_spacing_Y,
-                str(fiducialResult.a_champ_x) + ";" + str(fiducialResult.a_champ_y),
-                str(fiducialResult.b_champ_x) + ";" + str(fiducialResult.b_champ_y),
-                str(fiducialResult.c_champ_x) + ";" + str(fiducialResult.c_champ_y),
-                str(fiducialResult.d_champ_x) + ";" + str(fiducialResult.d_champ_y),
-                fiducialResult.shape)
-            cursorPG.execute(insert_custom_panel, insert_custom_panel_values_)
-        else:
-            uuid_custom_panel = None
+            quantity_pcb_panel = None
 
-        dimension_length = None
-        dimension_width = None
-        isDesignByCustomer = None
-        xout = None
-        quantity_different_pcb_type = None
+            if fr4Dimension.paneltype == "MULTI":
+                cursorMSQL.execute(select_fiducial, numcommand)
+                fiducial = cursorMSQL.fetchall()
 
-        if fr4Dimension.paneltype == "MULTI":
-            if fr4Dimension.typeallpcb == "YES":
-                dimension_length = fr4Dimension.panel_popup_Y
-                dimension_width = fr4Dimension.panel_popup_X
+                if (len(fiducial) == 0):
+                    raise ValueError("Fr4Dimension missing")
+                if (len(fiducial) > 1):
+                    fiducial = fiducial[-1]
+                if (len(fiducial) == 1):
+                    fiducial = fiducial[0]
+                fiducialResult = Fiduciales(*fiducial)
+
+                insert_custom_panel_values_ = (
+                    uuid_custom_panel, fr4Dimension.panelpopup_unit_X, fr4Dimension.panelpopup_unit_Y,
+                    fr4Dimension.panelpopup_nbpcb_X, fr4Dimension.panelpopup_nbpcb_Y,
+                    fr4Dimension.popup_panel_separationX, fr4Dimension.popup_panel_separationY,
+                    fr4Dimension.panelpopup_border_right, fr4Dimension.panelpopup_border_left,
+                    fr4Dimension.panelpopup_border_top, fr4Dimension.panelpopup_border_bottom,
+                    fr4Dimension.panelpopup_spacing_X, fr4Dimension.panelpopup_spacing_Y,
+                    str(fiducialResult.a_champ_x) + ";" + str(fiducialResult.a_champ_y),
+                    str(fiducialResult.b_champ_x) + ";" + str(fiducialResult.b_champ_y),
+                    str(fiducialResult.c_champ_x) + ";" + str(fiducialResult.c_champ_y),
+                    str(fiducialResult.d_champ_x) + ";" + str(fiducialResult.d_champ_y),
+                    fiducialResult.shape)
+                cursorPG.execute(insert_custom_panel, insert_custom_panel_values_)
             else:
-                dimension_length = fr4Dimension.panel_lenght_allpcb
-                dimension_width = fr4Dimension.panel_width_allpcb
-            isDesignByCustomer = fr4Dimension.typeallpcb
-            xout = fr4Dimension.allpcbxout_allpcb
-            quantity_pcb_panel = fr4Dimension.panel_popup_nbPCB
+                uuid_custom_panel = None
 
-        if fr4Dimension.paneltype == "UNIT":
-            dimension_length = fr4Dimension.unit_length
-            dimension_width = fr4Dimension.unit_width
+            dimension_length = None
+            dimension_width = None
+            isDesignByCustomer = None
+            xout = None
+            quantity_different_pcb_type = None
 
-        if fr4Dimension.paneltype == "VARIOUS":
-            dimension_length = fr4Dimension.panel_varioos_lenght
-            dimension_width = fr4Dimension.panel_varioos_width
-            isDesignByCustomer = fr4Dimension.varioostype
-            xout = fr4Dimension.allpcbxout_allpcb
-            quantity_different_pcb_type = fr4Dimension.differentpcb_type
-            quantity_pcb_panel = fr4Dimension.allpcbxout_varioos
+            if fr4Dimension.paneltype == "MULTI":
+                if fr4Dimension.typeallpcb == "YES":
+                    dimension_length = fr4Dimension.panel_popup_Y
+                    dimension_width = fr4Dimension.panel_popup_X
+                    quantity_pcb_panel = fr4Dimension.panel_popup_nbPCB
+                else:
+                    dimension_length = fr4Dimension.panel_lenght_allpcb
+                    dimension_width = fr4Dimension.panel_width_allpcb
+                    quantity_pcb_panel = fr4Dimension.panel_allpcb
+                isDesignByCustomer = fr4Dimension.typeallpcb
+                xout = fr4Dimension.allpcbxout_allpcb
 
-        if dimension_length == None or dimension_width == None:
-            raise ValueError("Dimension length ou dimension width erreur")
+            if fr4Dimension.paneltype == "UNIT":
+                dimension_length = fr4Dimension.unit_length
+                dimension_width = fr4Dimension.unit_width
 
-        order_content_values_ = (
-            uuid_order_content, fr4Dimension.paneltype, dimension_length,
-            dimension_width,
-            quantity_pcb_panel, xout,
-            quantity_different_pcb_type,
-            isDesignByCustomer, uuid_custom_panel, basicRequi.surface_treatment, basicRequi.solder_mask,
-            basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
-            basicRequi.pcb_thickness,
-            basicRequi.tg,
-            basicRequi.base_copper, basicRequi.external_copper, basicRequi.innerlayer, fr4Other.smallesttracewidth,
-            fr4Other.FinishedHoleDiameter, fr4Other.controlledimpedance, fr4Other.platedholes, fr4Other.viainpad,
-            fr4Other.sideplating, fr4Other.countersunkholes, fr4Other.edgebeveling, fr4Other.carbonprinting,
-            fr4Other.peelablemask, fr4Other.viaplug, fr4Other.ipc, fr4Other.vcut, 'NO', 'NO', fr4Other.datecode,
-            fr4Other.datecodewhere, fr4Other.rohslogo, fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo,
-            fr4Other.stencil, fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb,
-            order.messagecomplement)
+            if fr4Dimension.paneltype == "VARIOUS":
+                dimension_length = fr4Dimension.panel_varioos_lenght
+                dimension_width = fr4Dimension.panel_varioos_width
+                isDesignByCustomer = fr4Dimension.varioostype
+                xout = fr4Dimension.allpcbxout_allpcb
+                quantity_different_pcb_type = fr4Dimension.differentpcb_type
+                quantity_pcb_panel = fr4Dimension.allpcbxout_varioos
 
-        cursorPG.execute(insert_order_content, order_content_values_)
+            if dimension_length == None or dimension_width == None:
+                raise ValueError("Dimension length ou dimension width erreur")
 
-        cursorMSQL.execute(select_doyouneed_send, numcommand)
-        select_doyouneed_send_results = cursorMSQL.fetchone()
+            order_content_values_ = (
+                uuid_order_content, fr4Dimension.paneltype, dimension_length,
+                dimension_width,
+                quantity_pcb_panel, xout,
+                quantity_different_pcb_type,
+                isDesignByCustomer, uuid_custom_panel, basicRequi.surface_treatment, basicRequi.solder_mask,
+                basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
+                basicRequi.pcb_thickness,
+                basicRequi.tg,
+                basicRequi.base_copper, basicRequi.external_copper, basicRequi.innerlayer, fr4Other.smallesttracewidth,
+                fr4Other.FinishedHoleDiameter, fr4Other.controlledimpedance, fr4Other.platedholes, fr4Other.viainpad,
+                fr4Other.sideplating, fr4Other.countersunkholes, fr4Other.edgebeveling, fr4Other.carbonprinting,
+                fr4Other.peelablemask, fr4Other.viaplug, fr4Other.ipc, fr4Other.vcut, 'NO', 'NO', fr4Other.datecode,
+                fr4Other.datecodewhere, fr4Other.rohslogo, fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo,
+                fr4Other.stencil, fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb,
+                order.messagecomplement)
 
-        cursorMSQL.execute(select_teamgerb, numcommand)
-        select_teamgerb_results = cursorMSQL.fetchone()
+            cursorPG.execute(insert_order_content, order_content_values_)
 
-        cursorMSQL.execute(select_teamstencilask, numcommand)
-        select_teamstencilask_results = cursorMSQL.fetchone()
+            select_doyouneed_send_results_value = 'NONE'
+            if fr4Other.doyouneed == 'YES':
+                select_doyouneed_send_results_value = "ASK"
+                cursorMSQL.execute(select_doyouneed_send, numcommand)
+                select_doyouneed_send_results = cursorMSQL.fetchone()
+                if get_value_asksend(select_doyouneed_send_results) == 'DONE':
+                    select_doyouneed_send_results_value = 'DONE'
 
-        select_doyouneed_send_results_value = get_value_asksend(select_doyouneed_send_results)
-        select_teamgerb_results_value = get_value_asksend(select_teamgerb_results)
-        select_teamstencilask_results_value = get_value_asksend(select_teamstencilask_results)
+            select_teamgerb_results_value = 'NONE'
+            if fr4Other.doyougerb == 'YES':
+                select_teamgerb_results_value = "ASK"
+                cursorMSQL.execute(select_teamgerb, numcommand)
+                select_teamgerb_results = cursorMSQL.fetchone()
+                if get_value_asksend(select_teamgerb_results) == 'DONE':
+                    select_teamgerb_results_value = 'DONE'
 
-        if order.statut == "GOODS_FINISHED":
-            history_values_ = (
-                order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
-                order.partnumber, order.version,
-                order.statut, order.typecommande,
-                order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
-                select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
-                str(order.valeur_unitprice), str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
-                str(order.valeur_shippingcost),
-                str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
-            cursorPG.execute(insert_history, history_values_)
-            conn.commit()
-            good += 1
+            select_teamstencilask_results_value = 'NONE'
+            if fr4Other.stencil == 'YES':
+                select_teamstencilask_results_value = "ASK"
+                cursorMSQL.execute(select_teamstencilask, numcommand)
+                select_teamstencilask_results = cursorMSQL.fetchone()
+                if get_value_asksend(select_teamstencilask_results) == 'DONE':
+                    select_teamstencilask_results_value = 'DONE'
 
-        else:
-            order_values_ = (
-                order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
-                order.partnumber,
-                order.version,
-                order.statut, order.typecommande,
-                order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
-                select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
-                str(order.valeur_unitprice),
-                str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
-                str(order.valeur_shippingcost),
-                str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
+            if order.statut == "GOODS_FINISHED" or order.statut == "DELETE":
+                history_values_ = (
+                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
+                    order.partnumber, order.version,
+                    order.statut, order.typecommande,
+                    order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                    select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
+                    str(order.valeur_unitprice), str(order.valeur_totalpcbprice),
+                    str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_shippingcost),
+                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
+                cursorPG.execute(insert_history, history_values_)
+                conn.commit()
+                good += 1
 
-            cursorPG.execute(insert_order, order_values_)
-            conn.commit()
-            good += 1
+            else:
+                order_values_ = (
+                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
+                    order.partnumber,
+                    order.version,
+                    order.statut, order.typecommande,
+                    order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                    select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
+                    str(order.valeur_unitprice),
+                    str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_shippingcost),
+                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
 
-    except ValueError as e:
-        logging.error("[ValueError] - " + str(order.numcommande) + " " + str(e))
-        conn.rollback()
-        error += 1
-    except TypeError as e:
-        logging.error("[TypeError] - " + str(order.numcommande) + " " + str(e))
-        conn.rollback()
-        error += 1
-    except psycopg2.errors.SyntaxError as e:
-        logging.error("[StringDataRightTruncation] - " + str(order.numcommande), exc_info=False)
-        conn.rollback()
-        error += 1
-    except psycopg2.errors.StringDataRightTruncation as e:
-        logging.error("[StringDataRightTruncation] - " + str(order.numcommande) + " " + e.pgerror.replace("\n", ""))
-        conn.rollback()
-        error += 1
-    except psycopg2.errors.InFailedSqlTransaction as e:
-        logging.error("[InFailedSqlTransaction] - " + str(order.numcommande) + " " + str(e))
-        conn.rollback()
-        error += 1
-    except mysql.connector.errors.InternalError as e:
-        logging.error("[mysql-InternalError] - " + str(order.numcommande))
-        conn.rollback()
-        error += 1
-    except psycopg2.errors.InvalidDatetimeFormat as e:
-        logging.error("[InvalidDatetimeFormat] - " + str(order.numcommande) + " " + str(e))
-        conn.rollback()
-        error += 1
-    except psycopg2.errors.UniqueViolation as e:
-        logging.error("[UniqueViolation] - " + str(order.numcommande) + " " + str(e))
-        conn.rollback()
-        error += 1
-    total += 1
+                cursorPG.execute(insert_order, order_values_)
+                conn.commit()
+                good += 1
+
+        except ValueError as e:
+            logging.error("[ValueError] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except TypeError as e:
+            logging.error("[TypeError] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.SyntaxError as e:
+            logging.error("[StringDataRightTruncation] - " + str(order.numcommande), exc_info=False)
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.StringDataRightTruncation as e:
+            logging.error("[StringDataRightTruncation] - " + str(order.numcommande) + " " + e.pgerror.replace("\n", ""))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.InFailedSqlTransaction as e:
+            logging.error("[InFailedSqlTransaction] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except mysql.connector.errors.InternalError as e:
+            logging.error("[mysql-InternalError] - " + str(order.numcommande))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.InvalidDatetimeFormat as e:
+            logging.error("[InvalidDatetimeFormat] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.UniqueViolation as e:
+            logging.error("[UniqueViolation] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        total += 1
 
     logging.info(
         "error: " + str(error) + " / " + " good: " + str(good) + " total: " + str(total))

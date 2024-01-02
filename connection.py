@@ -11,10 +11,10 @@ cnx = mysql.connector.connect(
 )
 
 conn = psycopg2.connect(
-    host='localhost',
+    host='135.125.133.20',
     port='5432',
     user='postgres',
-    password='password',
+    password='LE%gh6Xz5AZ72%',
     database='pcbprototype'
 )
 
