@@ -1,11 +1,11 @@
+import logging
 import re
+import uuid
 
 import mysql
 import psycopg2.errors
-from phpserialize import unserialize
-from connection import cnx, conn, MD5
-import uuid
-import logging
+
+from connection import cnx, conn
 
 logging.basicConfig(filename='orderMigration.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')
@@ -1080,8 +1080,8 @@ def setOrders():
                     order.statut, order.typecommande,
                     order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
-                    str(order.valeur_unitprice), str(order.valeur_totalpcbprice),
-                    str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_unitprice),
+                    str(order.valeur_totalpcbpriceaftercost),str(order.valeur_totalpcbprice),
                     str(order.valeur_shippingcost),
                     str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
                 cursorPG.execute(insert_history, history_values_)
@@ -1097,7 +1097,7 @@ def setOrders():
                     order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
                     str(order.valeur_unitprice),
-                    str(order.valeur_totalpcbprice), str(order.valeur_totalpcbpriceaftercost),
+                    str(order.valeur_totalpcbpriceaftercost),str(order.valeur_totalpcbprice),
                     str(order.valeur_shippingcost),
                     str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
 

@@ -1,8 +1,10 @@
+import logging
+import uuid
+
 import psycopg2.errors
 from phpserialize import unserialize
-from connection import cnx, conn, MD5
-import uuid
-import logging
+
+from connection import cnx, conn
 
 logging.basicConfig(filename='userMigration.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')
@@ -152,7 +154,7 @@ def setUser():
 
             conn.commit()
             good += 1
-        except psycopg2.errors.SyntaxError as e:
+        except psycopg2.errors.SyntaxError:
             logging.error(user.ref, exc_info=False)
             conn.rollback()
             error += 1
@@ -212,7 +214,7 @@ def setUserInformationBilling():
         except ValueError:
             logging.error(information.ref + " corresponding to " + str(uuid_user))
 
-        except psycopg2.errors.SyntaxError as e:
+        except psycopg2.errors.SyntaxError:
             logging.error(information.ref, exc_info=False)
             conn.rollback()
             error += 1
@@ -269,7 +271,7 @@ def setUserInformationShipping():
             logging.error(information.ref + " corresponding to " + str(uuid_user))
             conn.rollback()
             error += 1
-        except psycopg2.errors.SyntaxError as e:
+        except psycopg2.errors.SyntaxError:
             logging.error(information.ref, exc_info=False)
             conn.rollback()
             error += 1
@@ -286,6 +288,7 @@ def setUserInformationShipping():
 
 
 def setUserInformationEngineer():
+    global uuid_user
     good = 0
     error = 0
     total = 0
@@ -324,7 +327,7 @@ def setUserInformationEngineer():
         except ValueError:
             logging.error(information.ref + " corresponding to " + str(uuid_user))
 
-        except psycopg2.errors.SyntaxError as e:
+        except psycopg2.errors.SyntaxError:
             logging.error(information.ref, exc_info=False)
             conn.rollback()
             error += 1
@@ -379,7 +382,7 @@ def setUserInformationPurchasingDepartment():
         except ValueError:
             logging.error(information.ref + " corresponding to " + str(uuid_user))
 
-        except psycopg2.errors.SyntaxError as e:
+        except psycopg2.errors.SyntaxError:
             logging.error(information.ref, exc_info=False)
             conn.rollback()
             error += 1
@@ -387,7 +390,7 @@ def setUserInformationPurchasingDepartment():
             logging.error("[StringDataRightTruncation] - " + information.ref + " " + e.pgerror.replace("\n", ""))
             conn.rollback()
             error += 1
-        except psycopg2.errors.InFailedSqlTransaction as e:
+        except psycopg2.errors.InFailedSqlTransaction:
             conn.rollback()
             error += 1
         total += 1
