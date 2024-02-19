@@ -371,13 +371,13 @@ class Fr4Other:
     def treatmentSmallesttracewidth(self, smallesttracewidth, numcommande):
         match smallesttracewidth:
             case "0.100":
-                return "TRACE_0_100"
+                return "0.100"
             case "0.075":
-                return "TRACE_0_075"
+                return "0.075"
             case "0.0875":
-                return "TRACE_0_0875"
+                return "0.0875"
             case "0.125":
-                return "TRACE_0_125"
+                return "0.125"
             case _:
                 raise ValueError(
                     "[treatmentSmallesttracewidth] - " + str(numcommande) + " value : " + str(smallesttracewidth))
@@ -385,11 +385,11 @@ class Fr4Other:
     def treatmentFinishedHoleDiameter(self, finishedHoleDiameter, numcommande):
         match finishedHoleDiameter:
             case "0.25":
-                return "FINISHED_HOLE_SIZE_0_25"
+                return "0.25"
             case "0.20":
-                return "FINISHED_HOLE_SIZE_0_20"
+                return "0.20"
             case "0.15":
-                return "FINISHED_HOLE_SIZE_0_15"
+                return "0.15"
             case _:
                 raise ValueError(
                     "[treatmentFinishedHoleDiameter] - " + str(numcommande) + " value : " + str(finishedHoleDiameter))
@@ -555,65 +555,65 @@ class BasicRequi:
     def treatmentLayer(self, layer, numcommande):
         match layer:
             case 0:
-                return "LAYERS_0"
+                return "0"
             case 1:
-                return "LAYERS_1"
+                return "1"
             case 2:
-                return "LAYERS_2"
+                return "2"
             case 4:
-                return "LAYERS_4"
+                return "4"
             case 6:
-                return "LAYERS_6"
+                return "6"
             case 8:
-                return "LAYERS_8"
+                return "8"
             case 10:
-                return "LAYERS_10"
+                return "10"
             case 12:
-                return "LAYERS_12"
+                return "12"
             case 14:
-                return "LAYERS_14"
+                return "14"
             case _:
                 raise ValueError("[treatmentLayer] - " + str(numcommande) + " value : " + str(layer))
 
     def treatmentPcbThickness(self, pcb_thickness, numcommande):
         match pcb_thickness:
             case "0.4":
-                return "THICKNESS_0_4"
+                return "0.4"
             case "0.6":
-                return "THICKNESS_0_6"
+                return "0.6"
             case "0.8":
-                return "THICKNESS_0_8"
+                return "0.8"
             case "1.0":
-                return "THICKNESS_1_0"
+                return "1.0"
             case "1.2":
-                return "THICKNESS_1_2"
+                return "1.2"
             case "1.5":
-                return "THICKNESS_1_5"
+                return "1.5"
             case "1.6":
-                return "THICKNESS_1_6"
+                return "1.6"
             case "1.8":
-                return "THICKNESS_1_8"
+                return "1.8"
             case "2.0":
-                return "THICKNESS_2_0"
+                return "2.0"
             case "2.4":
-                return "THICKNESS_2_4"
+                return "2.4"
             case "2.8":
-                return "THICKNESS_2_8"
+                return "2.8"
             case "3.0":
-                return "THICKNESS_3_0"
+                return "3.0"
             case "3.2":
-                return "THICKNESS_3_2"
+                return "3.2"
             case _:
                 raise ValueError("[treatmentPcbThickness] - " + str(numcommande) + " value : " + str(pcb_thickness))
 
     def treatmentTg(self, tg, numcommande):
         match tg:
             case "135":
-                return "GLASS_TRANSITION_135"
+                return "135"
             case "150":
-                return "GLASS_TRANSITION_150"
+                return "150"
             case "170":
-                return "GLASS_TRANSITION_170"
+                return "170"
             case _:
                 raise ValueError("[treatmentTg] - " + str(numcommande) + " value : " + str(tg))
 
@@ -693,47 +693,47 @@ class BasicRequi:
     def treatmentExternalCopper(self, externalCopper, numcommande):
         match externalCopper:
             case "17/35":
-                return "COPPER_THICKNESS_17_35"
+                return "17/35"
             case "70/95":
-                return "COPPER_THICKNESS_70_95"
+                return "70/95"
             case "70/105":
-                return "COPPER_THICKNESS_70_105"
+                return "70/105"
             case "35/70":
-                return "COPPER_THICKNESS_35_70"
+                return "35/70"
             case "105/140":
-                return "COPPER_THICKNESS_105_140"
+                return "105/140"
             case "35/55":
-                return "COPPER_THICKNESS_35_55"
+                return "35/55"
             case "105/125":
-                return "COPPER_THICKNESS_105_125"
+                return "105/125"
             case _:
                 return None
 
     def treatmentBaseCopper(self, baseCopper, numcommande):
         match baseCopper:
             case "18":
-                return "COPPER_THICKNESS_18"
+                return "18"
             case "35":
-                return "COPPER_THICKNESS_35"
+                return "35"
             case "70":
-                return "COPPER_THICKNESS_70"
+                return "70"
             case "105":
-                return "COPPER_THICKNESS_105"
+                return "105"
             case _:
                 return None
 
     def treatmentInnerLayer(self, innerLayer, numcommande):
         match innerLayer:
             case "18":
-                return "COPPER_THICKNESS_18"
+                return "18"
             case "35":
-                return "COPPER_THICKNESS_35"
+                return "35"
             case "70":
-                return "COPPER_THICKNESS_70"
+                return "70"
             case "105":
-                return "COPPER_THICKNESS_105"
+                return "105"
             case "140":
-                return "COPPER_THICKNESS_140"
+                return "140"
             case _:
                 return None
 
@@ -805,8 +805,6 @@ class Order:
                 return "GOODS_FINISHED"
             case 4:
                 return "WAITING_FOR_PAYMENT"
-            case 5:
-                return "DELETE"
             case _:
                 raise ValueError("[treatmentStatut] - " + str(numcommande) + " value : " + str(statut))
 
@@ -1073,7 +1071,7 @@ def setOrders():
                 if get_value_asksend(select_teamstencilask_results) == 'DONE':
                     select_teamstencilask_results_value = 'DONE'
 
-            if order.statut == "GOODS_FINISHED" or order.statut == "DELETE":
+            if order.statut == "GOODS_FINISHED":
                 history_values_ = (
                     order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
                     order.partnumber, order.version,
