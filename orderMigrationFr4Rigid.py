@@ -7,7 +7,7 @@ import psycopg2.errors
 
 from connection import cnx, conn
 
-logging.basicConfig(filename='orderMigration.log', level=logging.INFO,
+logging.basicConfig(filename='orderMigrationFr4Rigid.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')
 
 orders = []
