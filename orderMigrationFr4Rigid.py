@@ -838,14 +838,14 @@ def getOrders():
                     "valeur_shippingcost, valeur_totalpcbpriceaftercost, valeur_prixstencil, valeur_reception_date," \
                     " valeur_prod_date, la_langue, ladevise, producttime, temps_reduction_par_defaut, currency, " \
                     "documents, date, statut, pao, messagecomplement, numerodelacommande " \
-                    "from commande where date > '2020-01-01' and typecommande = 'FR4'"
-    # "from commande where date > '2023-05-01' and typecommande = 'FR4'"
+                    "from commande where date > '2023-05-01' and typecommande = 'FR4'"
+
+    # "from commande where date > '2020-01-01' and typecommande = 'FR4'"
 
     cursorMSQL.execute(query_members)
 
     results = cursorMSQL.fetchall()
 
- 
     for row in results:
         try:
             order = Order(*row)
@@ -875,7 +875,7 @@ def setOrders():
 
     insert_order_content = "INSERT INTO order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
                            "is_design_by_customer, custom_panel_id, surface_treatment, solder_mask," \
-                           "screen_printing_position, screen_printing_color, layers, thickness, glass_transition," \
+                           "screen_printing_position, screen_printing_color, layers, pcb_thickness, glass_transition," \
                            "copper_thickness_base, copper_thickness_external, copper_thickness_internal, trace," \
                            "finished_hole_size, impedance_control, plated_half_holes, via_in_pad, edge_side_plating, " \
                            "counter_sink_hole, edge_beveling, carbon_printing, peelable_mask, via_pluggling, ipc_class, " \
@@ -1081,7 +1081,7 @@ def setOrders():
                     order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
                     str(order.valeur_unitprice),
-                    str(order.valeur_totalpcbpriceaftercost),str(order.valeur_totalpcbprice),
+                    str(order.valeur_totalpcbpriceaftercost), str(order.valeur_totalpcbprice),
                     str(order.valeur_shippingcost),
                     str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
                 cursorPG.execute(insert_history, history_values_)
@@ -1097,7 +1097,7 @@ def setOrders():
                     order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
                     str(order.valeur_unitprice),
-                    str(order.valeur_totalpcbpriceaftercost),str(order.valeur_totalpcbprice),
+                    str(order.valeur_totalpcbpriceaftercost), str(order.valeur_totalpcbprice),
                     str(order.valeur_shippingcost),
                     str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
 
