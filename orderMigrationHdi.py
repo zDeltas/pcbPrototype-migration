@@ -7,7 +7,7 @@ import psycopg2.errors
 
 from connection import cnx, conn
 
-logging.basicConfig(filename='orderMigration.log', level=logging.INFO,
+logging.basicConfig(filename='orderMigrationFr4Hdi.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')
 
 orders = []
@@ -371,13 +371,13 @@ class Fr4Other:
     def treatmentSmallesttracewidth(self, smallesttracewidth, numcommande):
         match smallesttracewidth:
             case "0.100":
-                return "TRACE_0_100"
+                return "0.100"
             case "0.075":
-                return "TRACE_0_075"
+                return "0.075"
             case "0.0875":
-                return "TRACE_0_0875"
+                return "0.0875"
             case "0.125":
-                return "TRACE_0_125"
+                return "0.125"
             case _:
                 raise ValueError(
                     "[treatmentSmallesttracewidth] - " + str(numcommande) + " value : " + str(smallesttracewidth))
@@ -385,14 +385,13 @@ class Fr4Other:
     def treatmentFinishedHoleDiameter(self, finishedHoleDiameter, numcommande):
         match finishedHoleDiameter:
             case "0.25":
-                return "FINISHED_HOLE_SIZE_0_25"
+                return "0.25"
             case "0.20":
-                return "FINISHED_HOLE_SIZE_0_20"
+                return "0.20"
             case "0.15":
-                return "FINISHED_HOLE_SIZE_0_15"
+                return "0.15"
             case _:
-                raise ValueError(
-                    "[treatmentFinishedHoleDiameter] - " + str(numcommande) + " value : " + str(finishedHoleDiameter))
+                return "0.25"
 
     def treatmentControlledimpedance(self, controlledimpedance, numcommande):
         match controlledimpedance:
@@ -537,7 +536,7 @@ class Fiduciales:
 
 class BasicRequi:
     def __init__(self, id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, screen_printing,
-                 color_screen, external_copper, base_copper, innerlayer, buildup):
+                 color_screen, external_copper, base_copper, innerlayer, buildup, sequence):
         self.id = id
         self.numcommande = numcommande
         self.layer = self.treatmentLayer(layer, numcommande)
@@ -551,69 +550,60 @@ class BasicRequi:
         self.base_copper = self.treatmentBaseCopper(base_copper, numcommande)
         self.innerlayer = self.treatmentInnerLayer(innerlayer, numcommande)
         self.buildup = self.treatmentBuildup(buildup, numcommande)
+        self.sequence = self.treatmentSequence(sequence, numcommande)
 
     def treatmentLayer(self, layer, numcommande):
         match layer:
             case 0:
-                return "LAYERS_0"
+                return "0"
             case 1:
-                return "LAYERS_1"
+                return "1"
             case 2:
-                return "LAYERS_2"
+                return "2"
             case 4:
-                return "LAYERS_4"
+                return "4"
             case 6:
-                return "LAYERS_6"
+                return "6"
             case 8:
-                return "LAYERS_8"
+                return "8"
             case 10:
-                return "LAYERS_10"
+                return "10"
             case 12:
-                return "LAYERS_12"
+                return "12"
             case 14:
-                return "LAYERS_14"
+                return "14"
             case _:
                 raise ValueError("[treatmentLayer] - " + str(numcommande) + " value : " + str(layer))
 
     def treatmentPcbThickness(self, pcb_thickness, numcommande):
         match pcb_thickness:
-            case "0.4":
-                return "THICKNESS_0_4"
-            case "0.6":
-                return "THICKNESS_0_6"
             case "0.8":
-                return "THICKNESS_0_8"
+                return "0.8"
             case "1.0":
-                return "THICKNESS_1_0"
+                return "1.0"
             case "1.2":
-                return "THICKNESS_1_2"
-            case "1.5":
-                return "THICKNESS_1_5"
+                return "1.2"
+            case "1.4":
+                return "1.4"
             case "1.6":
-                return "THICKNESS_1_6"
+                return "1.6"
             case "1.8":
-                return "THICKNESS_1_8"
+                return "1.8"
             case "2.0":
-                return "THICKNESS_2_0"
+                return "2.0"
             case "2.4":
-                return "THICKNESS_2_4"
-            case "2.8":
-                return "THICKNESS_2_8"
-            case "3.0":
-                return "THICKNESS_3_0"
-            case "3.2":
-                return "THICKNESS_3_2"
+                return "2.4"
             case _:
                 raise ValueError("[treatmentPcbThickness] - " + str(numcommande) + " value : " + str(pcb_thickness))
 
     def treatmentTg(self, tg, numcommande):
         match tg:
             case "135":
-                return "GLASS_TRANSITION_135"
+                return "135"
             case "150":
-                return "GLASS_TRANSITION_150"
+                return "150"
             case "170":
-                return "GLASS_TRANSITION_170"
+                return "170"
             case _:
                 raise ValueError("[treatmentTg] - " + str(numcommande) + " value : " + str(tg))
 
@@ -693,47 +683,37 @@ class BasicRequi:
     def treatmentExternalCopper(self, externalCopper, numcommande):
         match externalCopper:
             case "17/35":
-                return "COPPER_THICKNESS_17_35"
+                return "17/35"
             case "70/95":
-                return "COPPER_THICKNESS_70_95"
+                return "70/95"
             case "70/105":
-                return "COPPER_THICKNESS_70_105"
+                return "70/105"
             case "35/70":
-                return "COPPER_THICKNESS_35_70"
+                return "35/70"
             case "105/140":
-                return "COPPER_THICKNESS_105_140"
+                return "105/140"
             case "35/55":
-                return "COPPER_THICKNESS_35_55"
+                return "35/55"
             case "105/125":
-                return "COPPER_THICKNESS_105_125"
+                return "105/125"
             case _:
                 return None
 
     def treatmentBaseCopper(self, baseCopper, numcommande):
-        match baseCopper:
-            case "18":
-                return "COPPER_THICKNESS_18"
-            case "35":
-                return "COPPER_THICKNESS_35"
-            case "70":
-                return "COPPER_THICKNESS_70"
-            case "105":
-                return "COPPER_THICKNESS_105"
-            case _:
-                return None
+        pass
 
     def treatmentInnerLayer(self, innerLayer, numcommande):
         match innerLayer:
             case "18":
-                return "COPPER_THICKNESS_18"
+                return "18"
             case "35":
-                return "COPPER_THICKNESS_35"
+                return "35"
             case "70":
-                return "COPPER_THICKNESS_70"
+                return "70"
             case "105":
-                return "COPPER_THICKNESS_105"
+                return "105"
             case "140":
-                return "COPPER_THICKNESS_140"
+                return "140"
             case _:
                 return None
 
@@ -746,6 +726,15 @@ class BasicRequi:
             case _:
                 return None
 
+    def treatmentSequence(self, sequence, numcommande):
+        match sequence:
+            case "twosequence":
+                return 2
+            case "onesequence":
+                return 1
+            case _:
+                raise ValueError("[treatmentSequence] - " + str(numcommande) + " value : " + str(sequence))
+
 
 class Order:
     def __init__(self, typedelacommande, typecommande, refmembre, numcommande, partnumber, version, system, qte, pays,
@@ -754,7 +743,7 @@ class Order:
                  valeur_prod_date, la_langue, ladevice, producttime, temps_reduction_par_defaut, currency, documents,
                  date, statut, pao, messagecomplement, numerodelacommande):
         self.typedelacommande = typedelacommande
-        self.typecommande = typecommande
+        self.typecommande = self.treatmentTypeCommande(typecommande)
         self.refmembre = refmembre
         self.numcommande = numcommande
         self.partnumber = partnumber
@@ -784,6 +773,9 @@ class Order:
         self.messagecomplement = messagecomplement
         self.numerodelacommande = numerodelacommande
 
+    def treatmentTypeCommande(self, numcommande):
+        return 'FR4_HDI'
+
     def treatmentReductionDelais(self, numcommande, reduction_delais):
         if reduction_delais == "no":
             return 0
@@ -805,8 +797,6 @@ class Order:
                 return "GOODS_FINISHED"
             case 4:
                 return "WAITING_FOR_PAYMENT"
-            case 5:
-                return "DELETE"
             case _:
                 raise ValueError("[treatmentStatut] - " + str(numcommande) + " value : " + str(statut))
 
@@ -838,9 +828,9 @@ def getOrders():
                     "valeur_shippingcost, valeur_totalpcbpriceaftercost, valeur_prixstencil, valeur_reception_date," \
                     " valeur_prod_date, la_langue, ladevise, producttime, temps_reduction_par_defaut, currency, " \
                     "documents, date, statut, pao, messagecomplement, numerodelacommande " \
-                    "from commande where date > '2023-05-01' and typecommande = 'FR4'"
+                    "from commande where date > '2023-05-01' and typecommande = 'HDI'"
 
-    # "from commande where date > '2020-01-01' and typecommande = 'FR4'"
+    # "from commande where date > '2020-01-01' and typecommande = 'HDI'"
 
     cursorMSQL.execute(query_members)
 
@@ -857,7 +847,7 @@ def getOrders():
 def setOrders():
     good = 0
     error = 0
-    total = 0
+    total = 1
 
     select_user_id = "select id from \"user\" where ref = %s;"
 
@@ -880,10 +870,10 @@ def setOrders():
                            "finished_hole_size, impedance_control, plated_half_holes, via_in_pad, edge_side_plating, " \
                            "counter_sink_hole, edge_beveling, carbon_printing, peelable_mask, via_pluggling, ipc_class, " \
                            "jv_cut, serial_number, approvals, date_code, date_code_position, rohs_logo, rohs_logo_position, ul_logo," \
-                           " ul_logo_position, smt_stencil_position, stencil_thickness, stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment)" \
+                           " ul_logo_position, smt_stencil_position, stencil_thickness, stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment, sequence_hdi)" \
                            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
                            "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
-                           "%s, %s, %s); "
+                           "%s, %s, %s, %s); "
 
     insert_custom_panel = "insert into custom_panel(id, pcb_width, pcb_length, number_pcb_x, number_pcb_y, " \
                           "separation_method_x, separation_method_y, right_border, left_border, top_border, " \
@@ -894,17 +884,17 @@ def setOrders():
     select_teamgerb = "select teamgerb from asksend_gerb where numcommande = %s;"
     select_teamstencilask = "select teamstencilask from asksend_stencil where numcommande = %s;"
 
-    select_fr4_basic_requi = "select id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, " \
-                             "screen_printing, color_screen, external_copper, base_copper, innerlayer, buildup " \
-                             "from fr4_basic_requi where numcommande = %s;"
+    select_hdi_basic_requi = "select id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, " \
+                             "screen_printing, color_screen, external_copper, base_copper, innerlayer, buildup,sequence " \
+                             "from hdi_basic_requi where numcommande = %s;"
 
-    select_fr4_other = "select id, numcommande, doyouneed, doyougerb, datecode, datecodewhere, rohslogo, " \
+    select_hdi_other = "select id, numcommande, doyouneed, doyougerb, datecode, datecodewhere, rohslogo, " \
                        "whererohlogo, ullogo, whereullogo, smallesttracewidth, FinishedHoleDiameter, " \
                        "controlledimpedance, viainpad, platedholes, sideplating, vcut, Countersunkholes, " \
                        "Edgebeveling, carbonprinting, peelablemask, viaplug, ipc, stencil, thickness, padreduction " \
-                       "from fr4_other where numcommande = %s;"
+                       "from hdi_other where numcommande = %s;"
 
-    select_fr4_dimension = "select id, numcommande, panel, unit, unit_length, unit_width, paneltype, typeallpcb, varioostype," \
+    select_hdi_dimension = "select id, numcommande, panel, unit, unit_length, unit_width, paneltype, typeallpcb, varioostype," \
                            "panel_lenght_allpcb, panel_width_allpcb, allpcbxout_allpcb, panel_allpcb," \
                            "panel_varioos_lenght, panel_varioos_width, differentpcb_type, allpcbxout_varioos," \
                            "panelpopup_unit_X, panelpopup_unit_Y, panelpopup_nbpcb_X, panelpopup_nbpcb_Y," \
@@ -912,7 +902,7 @@ def setOrders():
                            "panelpopup_border_left, popup_panel_separationX, popup_panel_separationY," \
                            "panelpopup_spacing_X, panelpopup_spacing_Y, allpcbxout_popup, panel_popup_X, panel_popup_Y," \
                            "panel_popup_nbPCB " \
-                           "from fr4_dimension where numcommande = %s;"
+                           "from hdi_dimension where numcommande = %s;"
 
     select_fiducial = "select id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x, d_champ_y, numcommande from fiduciales where numcommande = %s;"
 
@@ -934,38 +924,38 @@ def setOrders():
 
             numcommand = (order.numcommande,)
 
-            cursorMSQL.execute(select_fr4_basic_requi, numcommand)
-            select_fr4_basic_requi_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_hdi_basic_requi, numcommand)
+            select_hdi_basic_requi_result = cursorMSQL.fetchall()
 
-            if (len(select_fr4_basic_requi_result) == 0):
+            if (len(select_hdi_basic_requi_result) == 0):
                 raise ValueError("BasicRequi missing")
-            if (len(select_fr4_basic_requi_result) > 1):
-                select_fr4_basic_requi_result = select_fr4_basic_requi_result[-1]
-            if (len(select_fr4_basic_requi_result) == 1):
-                select_fr4_basic_requi_result = select_fr4_basic_requi_result[0]
-            basicRequi = BasicRequi(*select_fr4_basic_requi_result)
+            if (len(select_hdi_basic_requi_result) > 1):
+                select_hdi_basic_requi_result = select_hdi_basic_requi_result[-1]
+            if (len(select_hdi_basic_requi_result) == 1):
+                select_hdi_basic_requi_result = select_hdi_basic_requi_result[0]
+            basicRequi = BasicRequi(*select_hdi_basic_requi_result)
 
-            cursorMSQL.execute(select_fr4_other, numcommand)
-            select_fr4_other_requi_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_hdi_other, numcommand)
+            select_hdi_other_requi_result = cursorMSQL.fetchall()
 
-            if (len(select_fr4_other_requi_result) == 0):
+            if (len(select_hdi_other_requi_result) == 0):
                 raise ValueError("Fr4Other missing")
-            if (len(select_fr4_other_requi_result) > 1):
-                select_fr4_other_requi_result = select_fr4_other_requi_result[-1]
-            if (len(select_fr4_other_requi_result) == 1):
-                select_fr4_other_requi_result = select_fr4_other_requi_result[0]
-            fr4Other = Fr4Other(*select_fr4_other_requi_result)
+            if (len(select_hdi_other_requi_result) > 1):
+                select_hdi_other_requi_result = select_hdi_other_requi_result[-1]
+            if (len(select_hdi_other_requi_result) == 1):
+                select_hdi_other_requi_result = select_hdi_other_requi_result[0]
+            fr4Other = Fr4Other(*select_hdi_other_requi_result)
 
-            cursorMSQL.execute(select_fr4_dimension, numcommand)
-            select_fr4_dimension_result = cursorMSQL.fetchall()
+            cursorMSQL.execute(select_hdi_dimension, numcommand)
+            select_hdi_dimension_result = cursorMSQL.fetchall()
 
-            if (len(select_fr4_dimension_result) == 0):
+            if (len(select_hdi_dimension_result) == 0):
                 raise ValueError("Fr4Dimension missing")
-            if (len(select_fr4_dimension_result) > 1):
-                select_fr4_dimension_result = select_fr4_dimension_result[-1]
-            if (len(select_fr4_dimension_result) == 1):
-                select_fr4_dimension_result = select_fr4_dimension_result[0]
-            fr4Dimension = Fr4Dimension(*select_fr4_dimension_result)
+            if (len(select_hdi_dimension_result) > 1):
+                select_hdi_dimension_result = select_hdi_dimension_result[-1]
+            if (len(select_hdi_dimension_result) == 1):
+                select_hdi_dimension_result = select_hdi_dimension_result[0]
+            fr4Dimension = Fr4Dimension(*select_hdi_dimension_result)
 
             quantity_pcb_panel = None
 
@@ -1045,7 +1035,7 @@ def setOrders():
                 fr4Other.peelablemask, fr4Other.viaplug, fr4Other.ipc, fr4Other.vcut, 'NO', 'NO', fr4Other.datecode,
                 fr4Other.datecodewhere, fr4Other.rohslogo, fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo,
                 fr4Other.stencil, fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb,
-                order.messagecomplement)
+                order.messagecomplement, basicRequi.sequence)
 
             cursorPG.execute(insert_order_content, order_content_values_)
 
@@ -1073,7 +1063,7 @@ def setOrders():
                 if get_value_asksend(select_teamstencilask_results) == 'DONE':
                     select_teamstencilask_results_value = 'DONE'
 
-            if order.statut == "GOODS_FINISHED" or order.statut == "DELETE":
+            if order.statut == "GOODS_FINISHED":
                 history_values_ = (
                     order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
                     order.partnumber, order.version,
