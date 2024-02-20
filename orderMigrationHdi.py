@@ -383,15 +383,7 @@ class Fr4Other:
                     "[treatmentSmallesttracewidth] - " + str(numcommande) + " value : " + str(smallesttracewidth))
 
     def treatmentFinishedHoleDiameter(self, finishedHoleDiameter, numcommande):
-        match finishedHoleDiameter:
-            case "0.25":
-                return "0.25"
-            case "0.20":
-                return "0.20"
-            case "0.15":
-                return "0.15"
-            case _:
-                return "0.25"
+        pass
 
     def treatmentControlledimpedance(self, controlledimpedance, numcommande):
         match controlledimpedance:
