@@ -232,13 +232,11 @@ class Fr4Dimension:
 
 
 class Fr4Other:
-    def __init__(self, id, numcommande, doyouneed, doyougerb, datecode, datecodewhere, rohslogo, whererohlogo, ullogo,
-                 whereullogo, smallesttracewidth, FinishedHoleDiameter, controlledimpedance, viainpad, platedholes,
-                 sideplating, vcut, Countersunkholes, Edgebeveling, carbonprinting, peelablemask, viaplug, ipc, stencil,
-                 thickness, padreduction):
+    def __init__(self, id, numcommande, stencilmodal, doyougerb, datecode, datecodewhere, rohslogo, whererohlogo,
+                 ullogo, whereullogo, stencil, thickness, padreduction):
         self.id = id
         self.numcommande = self.treatmentNumcommande(numcommande, numcommande)
-        self.doyouneed = self.treatmentDoyouneed(doyouneed, numcommande)
+        self.doyouneed = self.treatmentDoyouneed(stencilmodal, numcommande)
         self.doyougerb = self.treatmentDoyougerb(doyougerb, numcommande)
         self.datecode = self.treatmentDatecode(datecode, numcommande)
         self.datecodewhere = self.treatmentDatecodewhere(datecodewhere, datecode, numcommande)
@@ -246,19 +244,19 @@ class Fr4Other:
         self.whererohlogo = self.treatmentWhererohlogo(whererohlogo, rohslogo, numcommande)
         self.ullogo = self.treatmentUllogo(ullogo, numcommande)
         self.whereullogo = self.treatmentWhereullogo(whereullogo, ullogo, numcommande)
-        self.smallesttracewidth = self.treatmentSmallesttracewidth(smallesttracewidth, numcommande)
-        self.FinishedHoleDiameter = self.treatmentFinishedHoleDiameter(FinishedHoleDiameter, numcommande)
-        self.controlledimpedance = self.treatmentControlledimpedance(controlledimpedance, numcommande)
-        self.viainpad = self.treatmentViainpad(viainpad, numcommande)
-        self.platedholes = self.treatmentPlatedholes(platedholes, numcommande)
-        self.sideplating = self.treatmentSideplating(sideplating, numcommande)
-        self.vcut = self.treatmentVcut(vcut, numcommande)
-        self.countersunkholes = self.treatmentCountersunkholes(Countersunkholes, numcommande)
-        self.edgebeveling = self.treatmentEdgebeveling(Edgebeveling, numcommande)
-        self.carbonprinting = self.treatmentCarbonprinting(carbonprinting, numcommande)
-        self.peelablemask = self.treatmentPeelablemask(peelablemask, numcommande)
-        self.viaplug = self.treatmentViaplug(viaplug, numcommande)
-        self.ipc = self.treatmentIpc(ipc, numcommande)
+        self.smallesttracewidth = None
+        self.FinishedHoleDiameter = None
+        self.controlledimpedance = None
+        self.viainpad = None
+        self.platedholes = None
+        self.sideplating = None
+        self.vcut = None
+        self.countersunkholes = None
+        self.edgebeveling = None
+        self.carbonprinting = None
+        self.peelablemask = None
+        self.viaplug = None
+        self.ipc = None
         self.stencil = self.treatmentStencil(stencil, numcommande)
         self.thickness = self.treatmentThickneess(thickness, numcommande)
         self.padreduction = self.treatmentPadreduction(padreduction, numcommande)
@@ -368,124 +366,6 @@ class Fr4Other:
             case _:
                 raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(whereullogo))
 
-    def treatmentSmallesttracewidth(self, smallesttracewidth, numcommande):
-        match smallesttracewidth:
-            case "0.100":
-                return "0.100"
-            case "0.075":
-                return "0.075"
-            case "0.0875":
-                return "0.0875"
-            case "0.125":
-                return "0.125"
-            case _:
-                raise ValueError(
-                    "[treatmentSmallesttracewidth] - " + str(numcommande) + " value : " + str(smallesttracewidth))
-
-    def treatmentFinishedHoleDiameter(self, finishedHoleDiameter, numcommande):
-        match finishedHoleDiameter:
-            case "0.25":
-                return "0.25"
-            case "0.20":
-                return "0.20"
-            case "0.15":
-                return "0.15"
-            case _:
-                return "0.25"
-
-    def treatmentControlledimpedance(self, controlledimpedance, numcommande):
-        match controlledimpedance:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError(
-                    "[treatmentControlledimpedance] - " + str(numcommande) + " value : " + str(controlledimpedance))
-
-    def treatmentViainpad(self, viainpad, numcommande):
-        match viainpad:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentViainpad] - " + str(numcommande) + " value : " + str(viainpad))
-
-    def treatmentPlatedholes(self, platedholes, numcommande):
-        match platedholes:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentViainpad] - " + str(numcommande) + " value : " + str(platedholes))
-
-    def treatmentSideplating(self, sideplating, numcommande):
-        match sideplating:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentSideplating] - " + str(numcommande) + " value : " + str(sideplating))
-
-    def treatmentVcut(self, vcut, numcommande):
-        match vcut:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentVcut] - " + str(numcommande) + " value : " + str(vcut))
-
-    def treatmentCountersunkholes(self, countersunkholes, numcommande):
-        if countersunkholes == '':
-            return 0
-        else:
-            return countersunkholes
-
-    def treatmentEdgebeveling(self, edgebeveling, numcommande):
-        match edgebeveling:
-            case "yes":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentEdgebeveling] - " + str(numcommande) + " value : " + str(edgebeveling))
-
-    def treatmentCarbonprinting(self, carbonprinting, numcommande):
-        if carbonprinting == '':
-            return 'NO'
-        else:
-            return 'YES'
-
-    def treatmentPeelablemask(self, peelablemask, numcommande):
-        if peelablemask == '':
-            return 'NO'
-        else:
-            return 'YES'
-
-    def treatmentViaplug(self, viaplug, numcommande):
-        match viaplug:
-            case "Solderresin":
-                return "YES"
-            case "":
-                return "NO"
-            case _:
-                raise ValueError("[treatmentViaplug] - " + str(numcommande) + " value : " + str(viaplug))
-
-    def treatmentIpc(self, ipc, numcommande):
-        match ipc:
-            case "class2":
-                return "IPC_CLASS_2"
-            case "class3":
-                return "IPC_CLASS_3"
-            case "":
-                return "NA"
-            case _:
-                raise ValueError("[treatmentIpc] - " + str(numcommande) + " value : " + str(ipc))
-
     def treatmentStencil(self, stencil, numcommande):
         match stencil:
             case "No":
@@ -535,8 +415,8 @@ class Fiduciales:
 
 
 class BasicRequi:
-    def __init__(self, id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, screen_printing,
-                 color_screen, external_copper, base_copper, innerlayer, buildup, sequence):
+    def __init__(self, id, numcommande, layer, pcb_thickness, tg, surface_treatment, screen_printing,
+                 color_screen, base_copper, solder_mask):
         self.id = id
         self.numcommande = numcommande
         self.layer = self.treatmentLayer(layer, numcommande)
@@ -546,11 +426,7 @@ class BasicRequi:
         self.solder_mask = self.treatmentSolderMask(solder_mask, numcommande)
         self.screen_printing = self.treatmentScreenPrinting(screen_printing, numcommande)
         self.color_screen = self.treatmentColorScreen(color_screen, numcommande)
-        self.external_copper = self.treatmentExternalCopper(external_copper, numcommande)
         self.base_copper = self.treatmentBaseCopper(base_copper, numcommande)
-        self.innerlayer = self.treatmentInnerLayer(innerlayer, numcommande)
-        self.buildup = self.treatmentBuildup(buildup, numcommande)
-        self.sequence = self.treatmentSequence(sequence, numcommande)
 
     def treatmentLayer(self, layer, numcommande):
         match layer:
@@ -598,12 +474,14 @@ class BasicRequi:
 
     def treatmentTg(self, tg, numcommande):
         match tg:
-            case "135":
-                return "135"
-            case "150":
-                return "150"
-            case "170":
-                return "170"
+            case "1.0 W/M.K":
+                return "1"
+            case "2.0 W/M.K":
+                return "2"
+            case "3.0 W/M.K":
+                return "3"
+            case "4.0 W/M.K":
+                return "4"
             case _:
                 raise ValueError("[treatmentTg] - " + str(numcommande) + " value : " + str(tg))
 
@@ -700,7 +578,15 @@ class BasicRequi:
                 return None
 
     def treatmentBaseCopper(self, baseCopper, numcommande):
-        pass
+        match baseCopper:
+            case "35":
+                return "35"
+            case "70":
+                return "70"
+            case "105":
+                return "105"
+            case _:
+                return None
 
     def treatmentInnerLayer(self, innerLayer, numcommande):
         match innerLayer:
@@ -760,7 +646,7 @@ class Order:
         self.valeur_totalpcbpriceaftercost = valeur_totalpcbpriceaftercost
         self.valeur_prixstencil = valeur_prixstencil
         self.valeur_reception_date = self.treatmentValeurDate(valeur_reception_date)
-        self.valeur_prod_date = valeur_prod_date
+        self.valeur_prod_date = self.treatmentProdDate(valeur_prod_date)
         self.la_langue = la_langue
         self.ladevice = ladevice
         self.producttime = self.treatmentProductTime(numcommande, producttime)
@@ -774,7 +660,7 @@ class Order:
         self.numerodelacommande = numerodelacommande
 
     def treatmentTypeCommande(self, numcommande):
-        return 'FR4_HDI'
+        return 'IMS'
 
     def treatmentReductionDelais(self, numcommande, reduction_delais):
         if reduction_delais == "no":
@@ -821,6 +707,11 @@ class Order:
             case _:
                 raise ValueError("[treatmentCurrency] - " + str(numcommande) + " value : " + str(currency))
 
+    def treatmentProdDate(self, valeur_prod_date):
+        if 'n/a' in valeur_prod_date:
+            return None
+        return valeur_prod_date
+
 
 def getOrders():
     query_members = "SELECT typedelacommande, typecommande, refmembre, numcommande, partnumber, version, \"system\", " \
@@ -828,9 +719,9 @@ def getOrders():
                     "valeur_shippingcost, valeur_totalpcbpriceaftercost, valeur_prixstencil, valeur_reception_date," \
                     " valeur_prod_date, la_langue, ladevise, producttime, temps_reduction_par_defaut, currency, " \
                     "documents, date, statut, pao, messagecomplement, numerodelacommande " \
-                    "from commande where date > '2023-05-01' and typecommande = 'HDI'"
+                    "from commande where date > '2023-05-01' and typecommande = 'SMI'"
 
-    # "from commande where date > '2020-01-01' and typecommande = 'HDI'"
+    # "from commande where date > '2020-01-01' and typecommande = 'SMI'"
 
     cursorMSQL.execute(query_members)
 
@@ -866,13 +757,13 @@ def setOrders():
     insert_order_content = "INSERT INTO order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
                            "is_design_by_customer, custom_panel_id, surface_treatment, solder_mask," \
                            "screen_printing_position, screen_printing_color, layers, pcb_thickness, glass_transition," \
-                           "copper_thickness_base, copper_thickness_external, copper_thickness_internal, trace," \
+                           "copper_thickness_base, trace," \
                            "finished_hole_size, impedance_control, plated_half_holes, via_in_pad, edge_side_plating, " \
                            "counter_sink_hole, edge_beveling, carbon_printing, peelable_mask, via_pluggling, ipc_class, " \
                            "jv_cut, serial_number, approvals, date_code, date_code_position, rohs_logo, rohs_logo_position, ul_logo," \
-                           " ul_logo_position, smt_stencil_position, stencil_thickness, stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment, sequence_hdi)" \
+                           " ul_logo_position, smt_stencil_position, stencil_thickness, stencil_pad_reduction, paste_mask_file, approve_gerber, additional_comment)" \
                            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
-                           "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
+                           "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
                            "%s, %s, %s, %s); "
 
     insert_custom_panel = "insert into custom_panel(id, pcb_width, pcb_length, number_pcb_x, number_pcb_y, " \
@@ -884,14 +775,12 @@ def setOrders():
     select_teamgerb = "select teamgerb from asksend_gerb where numcommande = %s;"
     select_teamstencilask = "select teamstencilask from asksend_stencil where numcommande = %s;"
 
-    select_smi_basic_requi = "select id, numcommande, layer, pcb_thickness, tg, surface_treatment, solder_mask, " \
-                             "screen_printing, color_screen, external_copper, base_copper, innerlayer, buildup,sequence " \
+    select_smi_basic_requi = "select id, numcommande, layer, pcb_thickness, thermal, surface_treatment, " \
+                             "screen_printing, color_screen, base_copper, soldermaskConnect " \
                              "from smi_basic_requi where numcommande = %s;"
 
-    select_smi_other = "select id, numcommande, doyouneed, doyougerb, datecode, datecodewhere, rohslogo, " \
-                       "whererohlogo, ullogo, whereullogo, smallesttracewidth, FinishedHoleDiameter, " \
-                       "controlledimpedance, viainpad, platedholes, sideplating, vcut, Countersunkholes, " \
-                       "Edgebeveling, carbonprinting, peelablemask, viaplug, ipc, stencil, thickness, padreduction " \
+    select_smi_other = "select id, numcommande, stencilmodal, doyougerb, datecode, datecodewhere, rohslogo, " \
+                       "whererohlogo, ullogo, whereullogo, stencil, thickness, padreduction " \
                        "from smi_other where numcommande = %s;"
 
     select_smi_dimension = "select id, numcommande, panel, unit, unit_length, unit_width, paneltype, typeallpcb, varioostype," \
@@ -900,8 +789,8 @@ def setOrders():
                            "panelpopup_unit_X, panelpopup_unit_Y, panelpopup_nbpcb_X, panelpopup_nbpcb_Y," \
                            "panelpopup_border_top, panelpopup_border_bottom, panelpopup_border_right," \
                            "panelpopup_border_left, popup_panel_separationX, popup_panel_separationY," \
-                           "panelpopup_spacing_X, panelpopup_spacing_Y, allpcbxout_popup, panel_popup_X, panel_popup_Y," \
-                           "panel_popup_nbPCB " \
+                           "panelpopup_spacing_X, panelpopup_spacing_Y, allpcbxout_popup, panel_popup_width, panel_popup_lenght, " \
+                           "panel_popup_pcb " \
                            "from smi_dimension where numcommande = %s;"
 
     select_fiducial = "select id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x, d_champ_y, numcommande from fiduciales where numcommande = %s;"
@@ -1029,13 +918,13 @@ def setOrders():
                 basicRequi.screen_printing, basicRequi.color_screen, basicRequi.layer,
                 basicRequi.pcb_thickness,
                 basicRequi.tg,
-                basicRequi.base_copper, basicRequi.external_copper, basicRequi.innerlayer, fr4Other.smallesttracewidth,
+                basicRequi.base_copper, fr4Other.smallesttracewidth,
                 fr4Other.FinishedHoleDiameter, fr4Other.controlledimpedance, fr4Other.platedholes, fr4Other.viainpad,
                 fr4Other.sideplating, fr4Other.countersunkholes, fr4Other.edgebeveling, fr4Other.carbonprinting,
                 fr4Other.peelablemask, fr4Other.viaplug, fr4Other.ipc, fr4Other.vcut, 'NO', 'NO', fr4Other.datecode,
                 fr4Other.datecodewhere, fr4Other.rohslogo, fr4Other.whererohlogo, fr4Other.ullogo, fr4Other.whereullogo,
                 fr4Other.stencil, fr4Other.thickness, fr4Other.padreduction, fr4Other.doyouneed, fr4Other.doyougerb,
-                order.messagecomplement, basicRequi.sequence)
+                order.messagecomplement)
 
             cursorPG.execute(insert_order_content, order_content_values_)
 
