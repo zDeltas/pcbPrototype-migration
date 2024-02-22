@@ -1,5 +1,7 @@
 connection.py
 orderMigrationFr4Rigid.log
 orderMigrationFr4Hdi.log
+orderMigrationFpc.log
+orderMigrationIms.log
 userMigration.log
 /.idea
