@@ -501,6 +501,22 @@ class Fr4Other:
                 raise ValueError("[treatmentPadreduction] - " + str(numcommande) + " value : " + str(padreduction))
 
 
+class TrackingNumber:
+    def __init__(self, id, numcommande, date_exp, num_track):
+        self.id = id
+        self.numcommande = numcommande
+        self.date_exp = date_exp
+        self.num_track = num_track
+
+
+class DateCommande:
+    def __init__(self, id, numcommande, goods_ready_date, reception_date):
+        self.id = id
+        self.numcommande = numcommande
+        self.goods_ready_date = goods_ready_date
+        self.reception_date = reception_date
+
+
 class Fiduciales:
     def __init__(self, id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x,
                  d_champ_y, numcommande):
@@ -898,6 +914,9 @@ def setOrders():
 
     select_fiducial = "select id, shape, a_champ_x, a_champ_y, b_champ_x, b_champ_y, c_champ_x, c_champ_y, d_champ_x, d_champ_y, numcommande from fiduciales where numcommande = %s;"
 
+    select_tracking_number = "select id, numcommande, date_exp, num_track from commande_suivi where numcommande = %s;"
+    select_datecommande = "select id, numcommande, goods_ready_date, reception_date from datecommande where numcommande = %s;"
+
     # print("Orders: " + str(len(orders)))
 
     for order in orders:
@@ -1056,16 +1075,37 @@ def setOrders():
                     select_teamstencilask_results_value = 'DONE'
 
             if order.statut == "GOODS_FINISHED":
+                cursorMSQL.execute(select_tracking_number, numcommand)
+                select_tracking_number_results = cursorMSQL.fetchone()
+                trackingNumber = TrackingNumber(*select_tracking_number_results)
+
+                cursorMSQL.execute(select_datecommande, numcommand)
+                select_datecommande_results = cursorMSQL.fetchone()
+
+                date_exp = trackingNumber.date_exp
+                valeur_reception_date = order.valeur_reception_date
+
+                if (select_datecommande_results):
+                    datecommande = DateCommande(*select_datecommande_results)
+
+                    if (datecommande.goods_ready_date):
+                        date_exp = datecommande.goods_ready_date
+
+                    if (datecommande.reception_date):
+                        valeur_reception_date = datecommande.reception_date
+
                 history_values_ = (
-                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
+                    order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, valeur_reception_date,
                     order.partnumber, order.version,
                     order.statut, order.typecommande,
-                    order.pao, None, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
+                    order.pao, trackingNumber.num_track, order.qte, order.pays, order.reduction_delais,
+                    select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
                     str(order.valeur_unitprice),
                     str(order.valeur_totalpcbpriceaftercost), str(order.valeur_totalpcbprice),
                     str(order.valeur_shippingcost),
-                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency)
+                    str(order.valeur_prixstencil), order.producttime, order.numerodelacommande, order.currency,
+                    date_exp)
                 cursorPG.execute(insert_history, history_values_)
                 conn.commit()
                 good += 1
