@@ -868,8 +868,8 @@ def setOrders():
     insert_history = "INSERT INTO history (order_number, user_id, created_at, product_at, delivery_at, part_number, version, status_order," \
                      "material_type, purchased_order, tracking_number, quantity, shipping_destination_id, reduce_prod_time_by," \
                      "paste_mask_file, approve_gerber, stencil, order_content_id, unit_sell, sell, cost, shipping_cost," \
-                     "stencil_cost, production_time, reorder_number, currency) " \
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+                     "stencil_cost, production_time, reorder_number, currency, shipped_on) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
     insert_order_content = "INSERT INTO order_content (id, type_design, length, width, quantity_pcb_panel, cross_board, quantity_different_pcb_type," \
                            "is_design_by_customer, custom_panel_id, surface_treatment, solder_mask," \

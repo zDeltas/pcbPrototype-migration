@@ -1,11 +1,9 @@
-import re
+import logging
 
 import mysql
 import psycopg2.errors
-from phpserialize import unserialize
-from connection import cnx, conn, MD5
-import uuid
-import logging
+
+from connection import cnx, conn
 
 logging.basicConfig(filename='migrateTrackingNumber.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')

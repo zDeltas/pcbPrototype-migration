@@ -1,5 +1,5 @@
-import mysql.connector
 import mysql
+import mysql.connector
 import psycopg2
 
 cnx = mysql.connector.connect(
