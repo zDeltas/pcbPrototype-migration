@@ -958,7 +958,7 @@ def setOrders():
                     order.numcommande, uuid_user[0], order.date, order.valeur_prod_date, order.valeur_reception_date,
                     order.partnumber,
                     order.version,
-                    order.statut, order.typecommande,
+                    order.statut, 'FPC',
                     order.pao, order.qte, order.pays, order.reduction_delais, select_doyouneed_send_results_value,
                     select_teamgerb_results_value, select_teamstencilask_results_value, uuid_order_content,
                     str(order.valeur_unitprice),
