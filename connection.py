@@ -10,21 +10,21 @@ cnx = mysql.connector.connect(
     port='3306'
 )
 
-conn = psycopg2.connect(
-    host='localhost',
-    port='5432',
-    user='postgres',
-    password='password',
-    database='pcbprototype'
-)
-
 # conn = psycopg2.connect(
-#     host='135.125.133.20',
+#     host='localhost',
 #     port='5432',
 #     user='postgres',
-#     password='LE%gh6Xz5AZ72%',
+#     password='password',
 #     database='pcbprototype'
 # )
+
+conn = psycopg2.connect(
+    host='135.125.133.20',
+    port='5432',
+    user='postgres',
+    password='LE%gh6Xz5AZ72%',
+    database='pcbprototype'
+)
 
 from hashlib import md5
 

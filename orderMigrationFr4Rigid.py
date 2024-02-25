@@ -1175,6 +1175,10 @@ def setOrders():
             logging.error("[UniqueViolation] - " + str(order.numcommande) + " " + str(e))
             conn.rollback()
             error += 1
+        except psycopg2.errors.DatetimeFieldOverflow as e:
+            logging.error("[DatetimeFieldOverflow] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
         total += 1
 
     logging.info(

@@ -926,7 +926,7 @@ def setOrders():
                 date_exp = trackingNumber.date_exp
                 valeur_reception_date = order.valeur_reception_date
 
-                if(select_datecommande_results):
+                if (select_datecommande_results):
                     datecommande = DateCommande(*select_datecommande_results)
 
                     if (datecommande.goods_ready_date):
@@ -998,6 +998,10 @@ def setOrders():
             error += 1
         except psycopg2.errors.UniqueViolation as e:
             logging.error("[UniqueViolation] - " + str(order.numcommande) + " " + str(e))
+            conn.rollback()
+            error += 1
+        except psycopg2.errors.DatetimeFieldOverflow as e:
+            logging.error("[DatetimeFieldOverflow] - " + str(order.numcommande) + " " + str(e))
             conn.rollback()
             error += 1
         total += 1
