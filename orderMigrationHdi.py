@@ -5,7 +5,7 @@ import uuid
 import mysql
 import psycopg2.errors
 
-from connection import cnx, conn
+from connection import cnx, conn, checkConnection
 
 logging.basicConfig(filename='orderMigrationFr4Hdi.log', level=logging.INFO,
                     format='%(levelname)s - %(message)s')
@@ -686,7 +686,9 @@ class BasicRequi:
             case "Yellow":
                 return "YELLOW"
             case _:
-                return None
+                if(self.screen_printing == 'NO'):
+                    return 'WHITE'
+                raise ValueError("[treatmentColorScreen] - " + str(numcommande) + " value : " + str(colorScreen))
 
     def treatmentExternalCopper(self, externalCopper, numcommande):
         match externalCopper:
@@ -1172,6 +1174,8 @@ def setOrders():
 if __name__ == '__main__':
     cursorMSQL = cnx.cursor()
     cursorPG = conn.cursor()
+
+    checkConnection()
 
     # MySQL
     getOrders()
