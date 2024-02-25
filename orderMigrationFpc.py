@@ -296,8 +296,6 @@ class Fr4Other:
                 raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(datecode))
 
     def treatmentDatecodewhere(self, datecodewhere, datecode, numcommande):
-        if datecode == "No":
-            return None
 
         match datecodewhere:
             case "Top":
@@ -305,6 +303,8 @@ class Fr4Other:
             case "Bottom":
                 return "BOTTOM"
             case _:
+                if datecode == "No":
+                    return "TOP"
                 raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(datecodewhere))
 
     def treatmentRohslogo(self, rohslogo, numcommande):
@@ -321,15 +321,14 @@ class Fr4Other:
                 raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(rohslogo))
 
     def treatmentWhererohlogo(self, whererohlogo, rohslogo, numcommande):
-        if rohslogo == "No":
-            return None
-
         match whererohlogo:
             case "Top":
                 return "TOP"
             case "Bottom":
                 return "BOTTOM"
             case _:
+                if rohslogo == "No":
+                    return "TOP"
                 raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(whererohlogo))
 
     def treatmentUllogo(self, ullogo, numcommande):
@@ -346,8 +345,6 @@ class Fr4Other:
                 raise ValueError("[treatmentDatecode] - " + str(numcommande) + " value : " + str(ullogo))
 
     def treatmentWhereullogo(self, whereullogo, ullogo, numcommande):
-        if ullogo == "No":
-            return None
 
         match whereullogo:
             case "Top":
@@ -355,6 +352,8 @@ class Fr4Other:
             case "Bottom":
                 return "BOTTOM"
             case _:
+                if ullogo == "No":
+                    return "TOP"
                 raise ValueError("[treatmentDatecodewhere] - " + str(numcommande) + " value : " + str(whereullogo))
 
     def treatmentSmallesttracewidth(self, smallesttracewidth, numcommande):
